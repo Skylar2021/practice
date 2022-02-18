@@ -1,6 +1,6 @@
 // "use strict"
 import sql from 'mssql'
-import { sqlConfig } from './db.js'
+import { sqlConfig } from './db.config.js'
 
 export class User {
     
