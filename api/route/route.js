@@ -6,13 +6,15 @@ export function route() {
     const router = express.Router()
 
     // router.get('/', control.getAllUserData)
-    router.post('/login', control.login)
-    router.post('/register', control.register)
-    router.post('/logout', control.logout)
 
-    router.delete('/del-ac', control.delAc)
+    //staff login, logout, password update
+    router.post('/login', control.login)
+    router.post('/logout', control.logout)
+    router.put('/pwdchange',control.pwdChange)
+    // router.delete('/del-ac', control.delAc)
+    // router.post('/register', control.register)
     
-    router.put('/pwdchange/:uid',control.pwdChange)
+    
 
     return router
 }

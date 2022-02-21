@@ -1,6 +1,7 @@
 import { User } from '../model/db.user.js'
 import { Record } from '../model/db.record.js'
 import { Staff } from '../model/db.staff.js'
+import  {Summary} from '../model/db.summary.js'
 // const User = require('../model/db.model')
 
 
@@ -125,10 +126,11 @@ export default class Controller {
             req.session.destroy()
 
         } else {
-            res.status(400).json({ message: "please login" })
+            res.json({ message: "please login" })
 
         }
     }
+    /*
     delAc = async (req, res) => {
         // session destory
         console.log(req.session)
@@ -156,8 +158,9 @@ export default class Controller {
     }
     pwdChange = async (req, res) => {
         let userid = (req.params.uid) ? req.params.uid : req.body.uid
+        // let userid = (req.params.uid) ? req.params.uid : req.body.uid
         let pwd = req.body.password
-        console.log(`req: {uid: ${userid}, pwd: ${pwd}}`)
+        console.log(`req: {id: ${userid}, pwd: ${pwd}}`)
         if (userid && pwd) {
             try {
                 let affected = await User.updatePasswordByUserId(userid, pwd)
@@ -175,15 +178,30 @@ export default class Controller {
             res.json({ message: "empty Staff ID or password" })
         }
     }
-    getTimeRecord = async (req, res) => {
-        try {
-            let result = await Record.getAllTimeRecord()
-            res.status(200).json(result)
+    */
+   pwdChange = async (req, res) => {
+       let id = req.body.id
+       // let userid = (req.params.uid) ? req.params.uid : req.body.uid
+       let pwd = req.body.password
+       if (id && pwd) {
+           console.log(`req: {id: ${id }, pwd: ${pwd}}`)
+           try {
+               let affected = await Staff.updatePasswordBySatffId(id, pwd)
+               if (affected.rowsAffected) {
+                   res.status(200).json({ message: "password updated" })
 
-        } catch (err) {
-            console.log(err)
-        }
-    }
+               } else {
+                   res.json({ message: "password cannot update, please try again" })
+               }
+           } catch (err) {
+               console.log(err)
+
+           }
+       } else {
+           res.json({ message: "Staff ID or password empty" })
+       }
+   }
+
 
 }
 

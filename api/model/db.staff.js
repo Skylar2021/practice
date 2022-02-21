@@ -31,8 +31,8 @@ export class Staff {
             let result = await con.request(con)
                 .input('staff_id', sql.VarChar, id)
                 .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff.staff_status = 'A' AND staff.staff_id = @staff_id")
-            console.log("get user: ",result)
-            console.log("get user: ",result.recordset[0])
+            console.log("get user: ", result)
+            console.log("get user: ", result.recordset[0])
             return result.recordset[0]
 
 
@@ -64,17 +64,15 @@ export class Staff {
             console.log(err)
 
         }
- 
+
     }
-    static async renewRecord(uid, time, visible) {
+    static async updatePasswordBySatffId(id, password) {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
-                .input('uid', sql.VarChar, uid)
-                //uid to lower case
-                .input('time', sql.DateTime2, time)
-                .input('visible', sql.Bit, visible)
-                .query('UPDATE crud_time SET time = @time , private = @visible WHERE uid = @uid')
+                .input('staff_id', sql.VarChar, id)
+                .input('password', sql.VarChar, password)
+                .query("UPDATE staff SET password = @password WHERE staff_id = @staff_id")
             console.log(result.rowsAffected[0])
             console.log(result)
             return { rowsAffected: result.rowsAffected[0] }
@@ -87,6 +85,4 @@ export class Staff {
 }
 
 // Staff.getStaffDataById('1-2878')
-Staff.getAllExistUID()
-
-// Staff.renewRecord('andy','2022-01-06 00:00:00', 1)
+// Staff.getAllExistUID()
