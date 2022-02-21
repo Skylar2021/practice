@@ -14,6 +14,7 @@ export function route() {
     // router.delete('/del-ac', control.delAc)
     // router.post('/register', control.register)
     
+    router.get('/summary/get_self_review_summary',control.get_self_review_summary)
     
 
     return router

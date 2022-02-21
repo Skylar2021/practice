@@ -3,7 +3,8 @@ import sql from 'mssql'
 import { sqlConfig } from './db.config.js'
 
 export class Summary {
-    static async self_reviewer(id, assign_type = 'S') {
+    static async self_review(id, assign_type) {
+        // assign_type default = 'S'
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
@@ -11,8 +12,8 @@ export class Summary {
                 .input('assign_type', sql.VarChar(50), assign_type)
                 .execute('get_my_summary_self')
 
-            console.log(result)
-            return result
+            console.log(result.recordset[0])
+            return result.recordset[0]
         } catch (err) {
             console.log(err)
         }
@@ -36,3 +37,5 @@ export class Summary {
         }
         */
     }
+
+    Summary.self_review('1-2878', 'S')

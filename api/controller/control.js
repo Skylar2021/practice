@@ -1,7 +1,7 @@
 import { User } from '../model/db.user.js'
 import { Record } from '../model/db.record.js'
 import { Staff } from '../model/db.staff.js'
-import  {Summary} from '../model/db.summary.js'
+import { Summary } from '../model/db.summary.js'
 // const User = require('../model/db.model')
 
 
@@ -179,28 +179,49 @@ export default class Controller {
         }
     }
     */
-   pwdChange = async (req, res) => {
-       let id = req.body.id
-       // let userid = (req.params.uid) ? req.params.uid : req.body.uid
-       let pwd = req.body.password
-       if (id && pwd) {
-           console.log(`req: {id: ${id }, pwd: ${pwd}}`)
-           try {
-               let affected = await Staff.updatePasswordBySatffId(id, pwd)
-               if (affected.rowsAffected) {
-                   res.status(200).json({ message: "password updated" })
+    pwdChange = async (req, res) => {
+        let id = req.body.id
+        // let userid = (req.params.uid) ? req.params.uid : req.body.uid
+        let pwd = req.body.password
+        if (id && pwd) {
+            console.log(`req: {id: ${id}, pwd: ${pwd}}`)
+            try {
+                let affected = await Staff.updatePasswordBySatffId(id, pwd)
+                if (affected.rowsAffected) {
+                    res.status(200).json({ message: "password updated" })
 
-               } else {
-                   res.json({ message: "password cannot update, please try again" })
-               }
-           } catch (err) {
-               console.log(err)
+                } else {
+                    res.json({ message: "password cannot update, please try again" })
+                }
+            } catch (err) {
+                console.log(err)
 
-           }
-       } else {
-           res.json({ message: "Staff ID or password empty" })
-       }
-   }
+            }
+        } else {
+            res.json({ message: "Staff ID or password empty" })
+        }
+    }
+
+    get_self_review_summary = async (req, res) => {
+        let assign_type = 'S'
+        // let staffId = req.body.id
+        let staffId = req.session.userData["staff_id"]
+        console.log("staff_id:", staffId)
+        if (staffId) {
+            try {
+                let result = await Summary.self_review(staffId, assign_type)
+                if (result) {
+                    req.session.userData["t_id"] = result.t_id
+                    res.status(200).json(result)
+                    // console.log(result)
+                }
+            } catch (err) {
+
+            }
+        } else {
+            res.json({ message: "staff id empty" })
+        }
+    }
 
 
 }
