@@ -5,7 +5,7 @@ export function route() {
     let control = new Controller()
     const router = express.Router()
 
-    router.get('/', control.getAllUserData)
+    // router.get('/', control.getAllUserData)
     router.post('/login', control.login)
     router.post('/register', control.register)
     router.post('/logout', control.logout)

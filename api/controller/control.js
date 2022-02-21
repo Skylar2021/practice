@@ -1,5 +1,6 @@
 import { User } from '../model/db.user.js'
 import { Record } from '../model/db.record.js'
+import { Staff } from '../model/db.staff.js'
 // const User = require('../model/db.model')
 
 
@@ -15,6 +16,8 @@ export default class Controller {
 
         }
     }
+
+    /*
     getAllUserData = async (req, res) => {
         try {
             let result = await User.getAllUser()
@@ -24,49 +27,52 @@ export default class Controller {
             console.log(err)
         }
     }
+    */
 
     login = async (req, res) => {
         console.log("login")
-
         console.log(req.session)
         console.log("session id")
         console.log(req.sessionID)
-        console.log(req.session.userData)
-        if (!req.body.uid || !req.body.password) {
-            res.status(400).json({ login: false, message: "user id or password empty" })
+        console.log(req.session?.userData)
+        if (!req.body.id || !req.body.password) {
+            res.json({ login: false, message: "Staff ID or password empty" })
             return
         }
         if (req.session.userData) {
             res.json({ login: true, user: req.session.userData, message: "user logged in alreday" })
-
             return
         }
         try {
-            let userFound = await User.getUserDataByUserId(req.body.uid)
+            let userFound = await Staff.getStaffDataById(req.body.id)
+
+            console.log("userFound: ")
+            console.log(userFound)
             if (!userFound) {
-                res.status(400).json({ login: false, message: "user id not found" })
+                res.json({ login: false, message: "Staff ID not found" })
                 return
             } else if (userFound.password.toString() === req.body.password) {
-                let user = { "uid": userFound.uid, "username": userFound.username }
-                req.session.userData = user
-                res.status(200).json({ login: true, user: user })
+                // let user = { "staff_d": userFound.staff_id, "username": userFound.name }
+                req.session.userData = userFound
+                res.status(200).json({ login: true })
 
             } else if (userFound.password.toString() !== req.body.password) {
-                res.status(401).json({ login: false, message: "invalid password" })
+                res.json({ login: false, message: "invalid password" })
             }
 
         } catch (err) {
-            res.status(400).json({ login: false, message: "invalid user id" })
+            res.json({ login: false, message: "again! invalid Staff ID" })
             console.log(err)
         }
     }
+    /*
     register = async (req, res) => {
         console.log("register")
 
         console.log(req.session)
         console.log(req.sessionID)
         if (!req.body.uid || !req.body.password || !req.body.username) {
-            res.status(400).json({ register: false, message: "user id, password or username empty" })
+            res.status(400).json({ register: false, message: "Staff ID, password or username empty" })
             return
         }
         if (req.session.userData) {
@@ -77,7 +83,7 @@ export default class Controller {
             let users = await User.getAllUser()
             let isExist = users?.find(user => user.uid == req.body.uid)
             if (isExist) {
-                res.status(400).json({ register: false, message: "user id existed" })
+                res.status(400).json({ register: false, message: "Staff ID existed" })
             } else {
                 try {
                     let regUser = await User.addNewUser(req.body.uid, req.body.password, req.body.username)
@@ -103,6 +109,7 @@ export default class Controller {
             res.status(500).json({ register: false, message: "server error" })
         }
     }
+    */
     logout = async (req, res) => {
         // session destory
         console.log("logout")
@@ -143,7 +150,7 @@ export default class Controller {
                 console.log(err)
             }
         } else {
-            res.status(400).json({ message: "user id not found" })
+            res.status(400).json({ message: "Staff ID not found" })
 
         }
     }
@@ -165,7 +172,7 @@ export default class Controller {
 
             }
         } else {
-            res.json({ message: "empty user id or password" })
+            res.json({ message: "empty Staff ID or password" })
         }
     }
     getTimeRecord = async (req, res) => {
@@ -180,5 +187,4 @@ export default class Controller {
 
 }
 
-// module.exports = Controller
 
