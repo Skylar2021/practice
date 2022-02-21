@@ -2,12 +2,12 @@
 import sql from 'mssql'
 import { sqlConfig } from './db.config.js'
 
-export class Record {
+export class Staff {
     static async getAllStaffRecord() {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
-                .query("select * from staff join staff_assign on staff.staff_id = staff_assign.staff_id join staff_form on staff.staff_id = staff_form.staff_id join position on staff.position_id = position.position_id join dept on staff.dept_id = dept.dept_id where staff.staff_id = '1-9005'",)
+                .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff_status = 'A' --where staff.staff_id = '1-9005'",)
             if (result.recordset) {
                 console.log(`row affected: [${result.rowsAffected}]`)
                 console.log("get all record:")
@@ -30,19 +30,15 @@ export class Record {
             let con = await sql.connect(sqlConfig)
             let result = await con.request(con)
                 .input('staff_id', sql.VarChar, id)
-                .query('select * from staff join staff_assign on staff.staff_id = staff_assign.staff_id join staff_form on staff.staff_id = staff_form.staff_id join position on staff.position_id = position.position_id join dept on staff.dept_id = dept.dept_id where staff.staff_id = @staff_id')
-
+                .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff.staff_status = 'A' AND staff.staff_id = @staff_id")
+            console.log("get user: ",result)
             console.log("get user: ",result.recordset[0])
             return result.recordset[0]
 
-            // let con = await sql.connect(sqlConfig)
-            // let result = await con.request()
-            //     // .input('user_id', sql.VarChar, id)
-            //     .query('select * from crud_userlist')
 
-            // console.dir(result.recordset)
         } catch (err) {
             console.log(err)
+            return err.meassage
         }
     }
 
@@ -50,7 +46,7 @@ export class Record {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
-                .query('select uid from crud_time',)
+                .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff.staff_status = 'A'")
             if (result.rowsAffected[0]) {
                 // console.log(result)
                 console.log(`row affected: [${result.rowsAffected[0]}]`)
@@ -58,7 +54,7 @@ export class Record {
                 // console.log(result.recordset)
                 let uidArr = [], resultArr = result.recordset
                 for (let i of resultArr) {
-                    uidArr.push(i.uid)
+                    uidArr.push(i["staff_id"])
                 }
                 console.log("all user id", uidArr)
                 return uidArr
@@ -68,7 +64,7 @@ export class Record {
             console.log(err)
 
         }
-
+ 
     }
     static async renewRecord(uid, time, visible) {
         try {
@@ -90,6 +86,7 @@ export class Record {
 
 }
 
-Record.getAllStaffRecord()
+// Staff.getStaffDataById('1-2878')
+Staff.getAllExistUID()
 
-// Record.renewRecord('andy','2022-01-06 00:00:00', 1)
+// Staff.renewRecord('andy','2022-01-06 00:00:00', 1)
