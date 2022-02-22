@@ -54,7 +54,27 @@ export default class Controller {
                 return
             } else if (userFound.password.toString() === req.body.password) {
                 // let user = { "staff_d": userFound.staff_id, "username": userFound.name }
-                req.session.userData = userFound
+                req.session.userData = {}
+                req.session.userData["staff_id"] = userFound.staff_id
+                req.session.userData["name"] = userFound.name
+                req.session.userData["chinese_name"] = userFound.chinese_name
+                req.session.userData["grade_id"] = userFound.grade_id
+                req.session.userData["position_id"] = userFound.position_id
+                req.session.userData["position_desc"] = userFound.position_desc
+                req.session.userData["dept_id"] = userFound.dept_id
+                req.session.userData["dept_name"] = userFound.dept_name
+                req.session.userData["dept_head_id"] = userFound.dept_head_id
+                req.session.userData["div_head_id"] = userFound.div_head_id
+                req.session.userData["final_score_id"] = userFound.final_score_id
+                req.session.userData["supervisor_id"] = userFound.supervisor_id
+                req.session.userData["date_joined"] = userFound.date_joined
+                req.session.userData["email"] = userFound.email
+                req.session.userData["reviewer_id"] = userFound.reviewer_id
+                req.session.userData["form_type_id"] = userFound.form_type_id
+                req.session.userData["form_id"] = userFound.form_id
+                req.session.userData["year"] = new Date().getFullYear()
+                console.log(req.session.userData)
+                // req.session.userData[""] = userFound.
                 res.status(200).json({ login: true })
 
             } else if (userFound.password.toString() !== req.body.password) {
@@ -62,7 +82,7 @@ export default class Controller {
             }
 
         } catch (err) {
-            res.json({ login: false, message: "again! invalid Staff ID" })
+            res.json({ login: false, message: "try again! maybe invalid Staff ID" })
             console.log(err)
         }
     }
@@ -122,7 +142,7 @@ export default class Controller {
         //         if (err) console.log(err)
         //     })
         if (req.session.userData) {
-            res.status(200).json({ login: false, message: `user ${req.session.userData.username} logout` })
+            res.status(200).json({ login: false, message: `user ${req.session.userData.name} logout` })
             req.session.destroy()
 
         } else {
@@ -211,12 +231,17 @@ export default class Controller {
             try {
                 let result = await Summary.self_review(staffId, assign_type)
                 if (result) {
-                    req.session.userData["t_id"] = result.t_id
+                    req.session.review = {}
+                    req.session.review["t_id"] = result.t_id
+                    req.session.review["close_date"] = result.close_date
+                    req.session.review["appr_from_date"] = result.appr_from_date
+                    req.session.review["appr_to_date"] = result.appr_to_date
+                    console.log(req.session.review["t_id"])
                     res.status(200).json(result)
                     // console.log(result)
                 }
             } catch (err) {
-
+                console.log(err)
             }
         } else {
             res.json({ message: "staff id empty" })
