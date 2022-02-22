@@ -3,6 +3,8 @@ import sql from 'mssql'
 import { sqlConfig } from './db.config.js'
 
 export class Staff {
+    static year = new Date().getFullYear()
+    
     static async getAllStaffRecord() {
         try {
             let con = await sql.connect(sqlConfig)
@@ -30,7 +32,9 @@ export class Staff {
             let con = await sql.connect(sqlConfig)
             let result = await con.request(con)
                 .input('staff_id', sql.VarChar, id)
-                .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff.staff_status = 'A' AND staff.staff_id = @staff_id")
+                .input('year', sql.VarChar, this.year)
+                .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_joined, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id, form.form_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id LEFT JOIN form ON staff_form.form_type_id = form.form_type_id WHERE staff.staff_status = 'A' AND staff.staff_id = @staff_id AND form.year = @year")
+                // .query("SELECT staff.staff_id, staff.staff_status, staff.password, staff.name, staff.chinese_name, staff.grade_id, staff.position_id, position.position_desc, staff.dept_id, dept.dept_name, dept.dept_head_id, dept.div_head_id, dept.final_score_id, supervisor_id, staff.date_JOINed, staff.email, staff.location, staff_assign.assign_type, staff_assign.reviewer_id,staff_form.form_type_id FROM staff JOIN staff_assign ON staff.staff_id = staff_assign.staff_id JOIN staff_form ON staff.staff_id = staff_form.staff_id JOIN position ON staff.position_id = position.position_id JOIN dept ON staff.dept_id = dept.dept_id WHERE staff.staff_status = 'A' AND staff.staff_id = @staff_id")
             console.log("get user: ", result)
             console.log("get user: ", result.recordset[0])
             return result.recordset[0]
