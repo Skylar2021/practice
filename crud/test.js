@@ -71,6 +71,28 @@ for (let i of a) {
 console.log(b)
 */
 
+let date = new Date()
+let YY = date.getFullYear()
+let MM = date.getMonth()
+let DD = date.getDate()
+console.log(`${YY}-${MM}-${DD}`) // 2022-1-22
+console.log(date.toDateString()) // Tue Feb 22 2022
+// console.log(year)
+let a = new Date().getFullYear()
+console.log(a)
 
+function formatDate() {
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+console.log(formatDate()) //2022-02-22
 
