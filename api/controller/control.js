@@ -1,7 +1,7 @@
 import { User } from '../model/db.user.js'
 import { Record } from '../model/db.record.js'
 import { Staff } from '../model/db.staff.js'
-import { Summary } from '../model/db.summary.js'
+import { Review } from '../model/db.review.js'
 // const User = require('../model/db.model')
 
 
@@ -37,10 +37,12 @@ export default class Controller {
         console.log(req.sessionID)
         console.log(req.session?.userData)
         if (!req.body.id || !req.body.password) {
+            res.status(400)
             res.json({ login: false, message: "Staff ID or password empty" })
             return
         }
         if (req.session.userData) {
+            res.status(400)
             res.json({ login: true, user: req.session.userData, message: "user logged in alreday" })
             return
         }
@@ -50,6 +52,7 @@ export default class Controller {
             console.log("userFound: ")
             console.log(userFound)
             if (!userFound) {
+                res.status(400)
                 res.json({ login: false, message: "Staff ID not found" })
                 return
             } else if (userFound.password.toString() === req.body.password) {
@@ -75,14 +78,24 @@ export default class Controller {
                 req.session.userData["year"] = new Date().getFullYear()
                 console.log(req.session.userData)
                 // req.session.userData[""] = userFound.
-                res.status(200).json({ login: true })
+                let user = {
+                    staff_id: userFound.staff_id,
+                    name: userFound.name,
+                    chinese_name: userFound.chinese_name,
+                    dept: userFound.dept_name,
+                    position: userFound.position_desc,
+                    date_joined: userFound.date_joined,
+                    email: userFound.email
+                }
+                res.status(200).json({ login: true, user: user })
 
             } else if (userFound.password.toString() !== req.body.password) {
+                res.status(400)
                 res.json({ login: false, message: "invalid password" })
             }
 
         } catch (err) {
-            res.json({ login: false, message: "try again! maybe invalid Staff ID" })
+            res.status(400).json({ login: false, message: "try again! " })
             console.log(err)
         }
     }
@@ -146,7 +159,8 @@ export default class Controller {
             req.session.destroy()
 
         } else {
-            res.json({ message: "please login" })
+
+            res.status(400).json({ message: "please login" })
 
         }
     }
@@ -211,14 +225,15 @@ export default class Controller {
                     res.status(200).json({ message: "password updated" })
 
                 } else {
-                    res.json({ message: "password cannot update, please try again" })
+                    res.status(400).json({ message: "password cannot update, please try again" })
                 }
             } catch (err) {
+                res.status(400).json({ message: "Please try again! " })
                 console.log(err)
 
             }
         } else {
-            res.json({ message: "Staff ID or password empty" })
+            res.status(400).json({ message: "Staff ID or password empty" })
         }
     }
 
@@ -229,7 +244,7 @@ export default class Controller {
         console.log("staff_id:", staffId)
         if (staffId) {
             try {
-                let result = await Summary.self_review(staffId, assign_type)
+                let result = await Review.get_self_review(staffId, assign_type)
                 if (result) {
                     req.session.review = {}
                     req.session.review["t_id"] = result.t_id
@@ -242,10 +257,69 @@ export default class Controller {
                 }
             } catch (err) {
                 console.log(err)
+                res.status(400).json({ message: "Please try again! " })
             }
         } else {
-            res.json({ message: "staff id empty" })
+            res.status(400).json({ message: "staff id empty" })
         }
+    }
+
+    getQuestions = async (req, res) => {
+        let form_id = req.session.review["form_id"]
+        if (form_id) {
+            try {
+                let result = await Review.getQuestionByFormId(form_id)
+                res.status(200).json(result)
+
+
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({  message: "Please try again! " })
+                
+            }
+        } else if (req.body.form_id) {
+            try {
+                let result = await Review.getQuestionByFormId(req.body.form_id)
+                res.status(200).json(result)
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({  message: "Please try again! " })
+                
+            }
+        } else {
+            res.status(400).json({ message: "form ID empty" })
+        }
+    }
+
+    getQNA = async(req, res) =>{
+        if(req.session.userData["staff_id"] && req.session.userData["year"] && req.session.review["t_id"] && req.session.userData["form_id"]){
+            let staffId = req.session.userData["staff_id"],
+            year = req.session.userData["year"],
+            t_id = req.session.review["t_id"],
+            formId = req.session.userData["form_id"]
+            try {
+                let result = await Review.getQNA(staffId,formId, t_id, year)
+                if(result){
+                    res.status(200).json(result)
+                }
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({  message: "Please try again! " })
+            }
+        } else {
+            res.status(400).json({message: "staff id, year, t_id or form id empty"})
+
+        }
+    }
+
+    getScores = async (req, res) => {
+        if (req.session.userData["staff_id"]) {
+            let result = await Review.getScoreByStaffId(req.session.userData["staff_id"])
+            
+        } else {
+            res.status(400).json({ message: "staff ID empty" })
+        }
+
     }
 
 
