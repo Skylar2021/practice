@@ -64,8 +64,35 @@ export class Review {
             return result.recordset
 
         } catch (err) {
+            console.log(err)
 
         }
+    }
+
+    static async ansUpdate(obj) {
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('t_id', sql.VarChar(50), obj.t_id)
+                .input('form_id', sql.VarChar(50), obj.form_id)
+                .input('question_id', sql.Int, obj.question_id)
+                .input('comments', sql.NVarChar(4000), obj.comments)
+                .input('choice_id', sql.Int, obj.choice_id)
+                .input('section', sql.Int, obj.section)
+                .input('emp_mon_sales', sql.NVarChar(50), obj.emp_mon_sales)
+                .input('store_mon_sales', sql.NVarChar(50), obj.store_mon_sales)
+                .input('emp_avg_sales', sql.NVarChar(50), obj.emp_avg_sales)
+                .input('store_avg_sales', sql.NVarChar(50), obj.store_avg_sales)
+                .query("UPDATE answer SET comments = @comments, choice_id = @choice_id, emp_mon_sales = @emp_mon_sales, store_mon_sales = @store_mon_sales, emp_avg_sales = @emp_avg_sales, store_avg_sales = @store_avg_sales WHERE (t_id = @t_id) AND (section = @section) AND (question_id = @question_id)")
+            console.log(result)
+            console.log({ rowsAffected: result.rowsAffected[0] })
+            return { rowsAffected: result.rowsAffected[0] }
+        } catch (err) {
+            console.log(err)
+            return { message: "update failed, please try again" }
+
+        }
+
     }
     /*
     static async getMySummary(uid, assign_type){
@@ -87,4 +114,16 @@ export class Review {
     */
 }
 
-// Review.getQNA('1-9005', 27, 'F221-9005S01', 2022)
+let obj = {
+    t_id : 'F221-9005S01',
+    question_id: 1,
+    comments : 'test',
+    choice_id: 4,
+    section: 1,
+    emp_mon_sales: null,
+    store_mon_sales: null,
+    emp_avg_sales:null,
+    store_avg_sales:null
+}
+// Review.ansUpdate(obj)
+// Review.ansUpdate(obj)
