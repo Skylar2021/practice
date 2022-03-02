@@ -118,12 +118,14 @@ export class User {
 // let user = User.getUserDataByUserId('sky')
 // console.log(user)
 // console.log(user.uid)
+/*
 (async () => {
     let user = await User.getMySummary('1-2812', 'S')
     console.log('1-2812')
     console.log(user)
     console.log(user?.rowsAffected[0])
 })()
+*/
 // module.exports = User;
 
 
