@@ -68,6 +68,6 @@ export class Record {
 
 }
 
-Record.getAllExistUID()
+// Record.getAllExistUID()
 
 // Record.renewRecord('andy','2022-01-06 00:00:00', 1)
