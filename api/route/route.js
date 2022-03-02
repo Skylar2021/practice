@@ -14,9 +14,12 @@ export function route() {
     // router.delete('/del-ac', control.delAc)
     // router.post('/register', control.register)
     
+    // review
     router.get('/review/get_self_review_summary',control.get_self_review_summary)
     router.get('/review/questions',control.getQuestions)
-    router.get('/review/qna',control.getQNA)
+    router.get('/review/qna_get',control.getQNA)
+    // router.get('/review/ans+score_insert',)
+    router.put('/review/ans_score_update',control.updateAnswer)
     
 
     return router
