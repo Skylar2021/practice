@@ -99,61 +99,14 @@ export default class Controller {
             console.log(err)
         }
     }
-    /*
-    register = async (req, res) => {
-        console.log("register")
 
-        console.log(req.session)
-        console.log(req.sessionID)
-        if (!req.body.uid || !req.body.password || !req.body.username) {
-            res.status(400).json({ register: false, message: "Staff ID, password or username empty" })
-            return
-        }
-        if (req.session.userData) {
-            res.status(400).json({ login: true, message: "user logged in alreday" })
-            return
-        }
-        try {
-            let users = await User.getAllUser()
-            let isExist = users?.find(user => user.uid == req.body.uid)
-            if (isExist) {
-                res.status(400).json({ register: false, message: "Staff ID existed" })
-            } else {
-                try {
-                    let regUser = await User.addNewUser(req.body.uid, req.body.password, req.body.username)
-                    if (regUser.rowsAffected) {
-
-                        res.status(200).json({ register: true, message: "user created", rowsAffected: `${regUser.rowsAffected}` })
-                    } else {
-                        console.log(regUser)
-
-                    }
-
-                } catch (err) {
-                    console.log(err)
-                    res.status(500).json({ register: false, message: "fail to create" })
-
-                }
-
-            }
-            // obj = { "uid": req.body.uid, "password": req.body.password, "username": req.body.username }
-        } catch (err) {
-            console.log(err)
-
-            res.status(500).json({ register: false, message: "server error" })
-        }
-    }
-    */
     logout = async (req, res) => {
         // session destory
         console.log("logout")
 
         console.log(req.session)
         console.log(req.session.userData)
-        // if (this.sessionData["user"]) {
-        //     this.sessionData.destroy(err => {
-        //         if (err) console.log(err)
-        //     })
+
         if (req.session.userData) {
             res.status(200).json({ login: false, message: `user ${req.session.userData.name} logout` })
             req.session.destroy()
@@ -165,31 +118,7 @@ export default class Controller {
         }
     }
     /*
-    delAc = async (req, res) => {
-        // session destory
-        console.log(req.session)
-        console.log(req.sessionID)
-        let uid = req.body.uid
-        if (uid) {
-            try {
-                let affected = await User.delUserByUserId(uid)
-                if (affected.rowsAffected) {
-                    req.session.destroy()
-                    res.status(200).json({ message: "account deleted", res: affected, "session": req.session.userData })
-
-                } else {
-                    res.status(400).json({ message: "fail to delete", res: affected })
-
-                }
-            } catch (err) {
-                res.status(500).json({ message: "failure" })
-                console.log(err)
-            }
-        } else {
-            res.status(400).json({ message: "Staff ID not found" })
-
-        }
-    }
+    
     pwdChange = async (req, res) => {
         let userid = (req.params.uid) ? req.params.uid : req.body.uid
         // let userid = (req.params.uid) ? req.params.uid : req.body.uid
@@ -274,8 +203,8 @@ export default class Controller {
 
             } catch (err) {
                 console.log(err)
-                res.status(400).json({  message: "Please try again! " })
-                
+                res.status(400).json({ message: "Please try again! " })
+
             }
         } else if (req.body.form_id) {
             try {
@@ -283,46 +212,71 @@ export default class Controller {
                 res.status(200).json(result)
             } catch (err) {
                 console.log(err)
-                res.status(400).json({  message: "Please try again! " })
-                
+                res.status(400).json({ message: "Please try again! " })
+
             }
         } else {
             res.status(400).json({ message: "form ID empty" })
         }
     }
 
-    getQNA = async(req, res) =>{
-        if(req.session.userData["staff_id"] && req.session.userData["year"] && req.session.review["t_id"] && req.session.userData["form_id"]){
+    getQNA = async (req, res) => {
+        if (req.session.userData["staff_id"] && req.session.userData["year"] && req.session.review["t_id"] && req.session.userData["form_id"]) {
             let staffId = req.session.userData["staff_id"],
-            year = req.session.userData["year"],
-            t_id = req.session.review["t_id"],
-            formId = req.session.userData["form_id"]
+                year = req.session.userData["year"],
+                t_id = req.session.review["t_id"],
+                formId = req.session.userData["form_id"]
             try {
-                let result = await Review.getQNA(staffId,formId, t_id, year)
-                if(result){
+                let result = await Review.getQNA(staffId, formId, t_id, year)
+                if (result) {
                     res.status(200).json(result)
                 }
             } catch (err) {
                 console.log(err)
-                res.status(400).json({  message: "Please try again! " })
+                res.status(400).json({ message: "Please try again!" })
             }
         } else {
-            res.status(400).json({message: "staff id, year, t_id or form id empty"})
+            res.status(400).json({ message: "staff id, year, t_id or form id empty" })
 
         }
     }
 
     getScores = async (req, res) => {
         if (req.session.userData["staff_id"]) {
-            let result = await Review.getScoreByStaffId(req.session.userData["staff_id"])
-            
+            try {
+                let result = await Review.getScoreByStaffId(req.session.userData["staff_id"])
+                if (result.rowsAffected) {
+
+                }
+            } catch (err) {
+
+            }
+
         } else {
             res.status(400).json({ message: "staff ID empty" })
         }
 
     }
+    updateAnswer = async (req, res) => {
+        if (req.body) {
+console.log(req.body)
+            try {
+                let result = await Review.ansUpdate(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({message: "updated"})
+                }else{
+                    res.status(400).json({message: "fail to update"})
+                    
+                }
+            } catch (err) {
+                res.status(400).json({message: "Please try again!"})
 
+            }
+        }
+    }
 
 }
+
+
 
 
