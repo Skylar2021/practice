@@ -6,8 +6,11 @@ import { Review } from '../model/db.review.js'
 
 
 export default class Controller {
-    constructor() {
+    constructor(){
+
     }
+
+    // static year = new Date().getFullYear()
 
     getTestString = async (req, res, next) => {
         try {
@@ -56,7 +59,7 @@ export default class Controller {
                 res.json({ login: false, message: "Staff ID not found" })
                 return
             } else if (userFound.password.toString() === req.body.password) {
-                // let user = { "staff_d": userFound.staff_id, "username": userFound.name }
+                // let user = { "staff_id": userFound.staff_id, "username": userFound.name }
                 req.session.userData = {}
                 req.session.userData["staff_id"] = userFound.staff_id
                 req.session.userData["name"] = userFound.name
@@ -259,18 +262,113 @@ export default class Controller {
     }
     updateAnswer = async (req, res) => {
         if (req.body) {
-console.log(req.body)
+            console.log(req.body)
             try {
                 let result = await Review.ansUpdate(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({message: "updated"})
-                }else{
-                    res.status(400).json({message: "fail to update"})
+                    res.status(200).json({ message: "updated" })
+                } else {
+                    res.status(400).json({ message: "fail to update" })
+
+                }
+            } catch (err) {
+                res.status(400).json({ message: "Please try again!" })
+
+            }
+        }
+    }
+    insertAnswer = async (req, res) => {
+        if (req.body) {
+            console.log(req.body)
+            try {
+                let result = await Review.ansInsert(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({ message: "updated" })
+                } else {
+                    res.status(400).json({ message: "fail to update" })
                     
                 }
             } catch (err) {
-                res.status(400).json({message: "Please try again!"})
+                res.status(400).json({ message: "Please try again!" })
+                
+            }
+        }
+    }
+    updateScore = async (req, res) => {
+        if (req.body) {
+            console.log(req.body)
+            try {
+                let result = await Review.scoreUpdate(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({ message: "updated" })
+                } else {
+                    res.status(400).json({ message: "fail to update" })
 
+                }
+            } catch (err) {
+                res.status(400).json({ message: "Please try again!" })
+
+            }
+        }
+    }
+    insertScore = async (req, res) => {
+        if (req.body) {
+            console.log(req.body)
+            try {
+                let result = await Review.scoreInsert(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({ message: "inserted" })
+                } else {
+                    res.status(400).json({ message: "fail to insert" })
+
+                }
+            } catch (err) {
+                res.status(400).json({message: "Please try again!" })
+
+            }
+        }
+    }
+    getTopDown = async (req, res)=>{
+        // get staff_id from session
+        let staffId = req.body.staff_id
+        console.log(staffId)
+        if(staffId){
+            try {
+                let result = await Review.getTopDownList( staffId, 'T')
+                if(result){
+                    console.log(result)
+                    res.status(200).json(result)
+                }else{
+                    res.status(400).json({ message: "no result" })
+
+                }
+                
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!", error: err.message })
+                
+            }
+        }
+    }
+    getDeptSummary = async (req, res)=>{
+        // get staff_id from session
+        let staffId = req.body.staff_id
+        console.log(staffId)
+        if(staffId){
+            try {
+                let result = await Review.getDeptReview( staffId)
+                if(result){
+                    console.log(result)
+                    res.status(200).json(result)
+                }else{
+                    res.status(400).json({ message: "no result" })
+
+                }
+                
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!", error: err.message })
+                
             }
         }
     }

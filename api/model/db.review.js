@@ -3,12 +3,13 @@ import sql from 'mssql'
 import { sqlConfig } from './db.config.js'
 
 export class Review {
-    static async get_self_review(id, assign_type) {
+
+    static async get_self_review(staff_id, assign_type) {
         // assign_type default = 'S'
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
-                .input('staff_id', sql.VarChar(50), id)
+                .input('staff_id', sql.VarChar(50), staff_id)
                 .input('assign_type', sql.VarChar(50), assign_type)
                 .execute('get_my_summary_self')
 
@@ -89,10 +90,123 @@ export class Review {
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { message: "update failed, please try again" }
+            return { payload: obj, message: "update failed, please try again" }
 
         }
 
+    }
+    static async ansInsert(obj) {
+        console.log(obj)
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('t_id', sql.VarChar(50), obj.t_id)
+                .input('form_id', sql.VarChar(50), obj.form_id)
+                .input('question_id', sql.Int, obj.question_id)
+                .input('comments', sql.NVarChar(4000), obj.comments)
+                .input('choice_id', sql.Int, obj.choice_id)
+                .input('section', sql.Int, obj.section)
+                .input('emp_mon_sales', sql.NVarChar(50), obj.emp_mon_sales)
+                .input('store_mon_sales', sql.NVarChar(50), obj.store_mon_sales)
+                .input('emp_avg_sales', sql.NVarChar(50), obj.emp_avg_sales)
+                .input('store_avg_sales', sql.NVarChar(50), obj.store_avg_sales)
+                .query("INSERT INTO answer(t_id, form_id, question_id, choice_id, comments, section, emp_mon_sales, store_mon_sales, emp_avg_sales, store_avg_sales) VALUES (@t_id, @form_id, @question_id, @choice_id, @comments, @section, @emp_mon_sales, @store_mon_sales, @emp_avg_sales, @store_avg_sales)")
+            console.log(result)
+            console.log({ rowsAffected: result.rowsAffected[0] })
+            return { rowsAffected: result.rowsAffected[0] }
+        } catch (err) {
+            console.log(err)
+            return { payload: obj, message: "insert failed, please try again" }
+
+        }
+
+    }
+    static async scoreInsert(obj) {
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('t_id', sql.VarChar(50), obj.t_id)
+                .input('form_id', sql.VarChar(50), obj.form_id)
+                .input('staff_id', sql.VarChar(50), obj.staff_id)
+                .input('assign_type', sql.VarChar(50), obj.assign_type)
+                .input('reviewer_id', sql.VarChar(50), obj.reviewer_id)
+                .input('status', sql.Int, obj.status)
+                .input('appr_id', sql.VarChar(50), obj.appr_id)
+                // .input('appr_dt', sql.DateTime2(7), obj.appr_dt)
+                .input('score_ttl', sql.Int, parseInt(obj.score_ttl))
+                .input('score_avg', sql.Decimal(3, 2), parseFloat(obj.score_avg))
+                // .input('last_upd_dt', sql.DateTime2(7), obj.last_upd_dt)
+                // .input('completion_dt', sql.DateTime2(7), obj.completion_dt)
+                .input('is_optional', sql.VarChar(1), obj.is_optional)
+
+                .query("INSERT INTO score(t_id, form_id, staff_id, assign_type, reviewer_id, status, appr_id, appr_dt, score_ttl, score_avg, last_upd_dt, completion_dt, is_optional) VALUES (@t_id, @form_id, @staff_id, @assign_type, @reviewer_id, @status, @appr_id, getdate(), @score_ttl, @score_avg, getdate(), getdate(), @is_optional)")
+            console.log("score insert:")
+            console.log({ rowsAffected: result.rowsAffected[0] })
+            return { rowsAffected: result.rowsAffected[0] }
+        } catch (err) {
+            console.log(err)
+            return { payload: obj, message: "insert failed, please try again" }
+
+        }
+
+    }
+    static async scoreUpdate(obj) {
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('t_id', sql.VarChar(50), obj.t_id)
+                .input('form_id', sql.VarChar(50), obj.form_id)
+                .input('staff_id', sql.VarChar(50), obj.staff_id)
+                .input('assign_type', sql.VarChar(50), obj.assign_type)
+                .input('reviewer_id', sql.VarChar(50), obj.reviewer_id)
+                .input('status', sql.Int, obj.status)
+                // .input('appr_dt', sql.DateTime2(7), obj.appr_dt)
+                .input('score_ttl', sql.Int, parseInt(obj.score_ttl))
+                .input('score_avg', sql.Decimal(3, 2), parseFloat(obj.score_avg))
+                // .input('last_upd_dt', sql.DateTime2(7), obj.last_upd_dt)
+                // .input('completion_dt', sql.DateTime2(7), obj.completion_dt)
+                .input('is_optional', sql.VarChar(1), obj.is_optional)
+                .query("UPDATE score SET status = @status, score_ttl = @score_ttl, score_avg = @score_avg, last_upd_dt = GETDATE(), completion_dt = GETDATE(), appr_dt = GETDATE(),is_optional = @is_optional WHERE (t_id = @t_id)")
+            // console.log(result)
+            console.log("score update:")
+            console.log({ rowsAffected: result.rowsAffected[0] })
+            return { rowsAffected: result.rowsAffected[0] }
+        } catch (err) {
+            console.log(err)
+            return { payload: obj, message: "update failed, please try again" }
+
+        }
+
+    }
+    static async getTopDownList( staff_id,assign_type){
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('staff_id', sql.VarChar(50), staff_id)
+                .input('assign_type', sql.VarChar(50), assign_type)
+                .execute('get_other_topdown')
+                // console.log(result)
+                console.log(result.recordset)
+                return result.recordset
+        } catch (err) {
+            console.log(err)
+            return { error: err.message, message: "please try again" }
+        }
+    }
+
+    static async getDeptReview(staff_id){
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('dept_head_id', sql.VarChar(50), staff_id)
+                .execute('get_dept_summary')
+                // console.log(result)
+                console.log(result.recordset)
+                return result.recordset
+        } catch (err) {
+            console.log(err)
+            return { error: err.message, message: "please try again" }
+        }
     }
     /*
     static async getMySummary(uid, assign_type){
@@ -115,15 +229,16 @@ export class Review {
 }
 
 let obj = {
-    t_id : 'F221-9005S01',
-    question_id: 1,
-    comments : 'test',
-    choice_id: 4,
-    section: 1,
-    emp_mon_sales: null,
-    store_mon_sales: null,
-    emp_avg_sales:null,
-    store_avg_sales:null
+    t_id: 'M221-9002T01',
+    staff_id: '1-9002',
+    form_id: 29,
+    assign_type: 'T',
+    reviewer_id: '1-9001',
+    status: 3,
+    appr_id: '1-9001',
+    score_ttl: '20',
+    score_avg: '4.09',
+    is_optional: 'N',
 }
-// Review.ansUpdate(obj)
-// Review.ansUpdate(obj)
+// Review.getTopDownList('1-0911','T' )
+// Review.scoreUpdate(obj)

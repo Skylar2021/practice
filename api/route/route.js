@@ -19,7 +19,12 @@ export function route() {
     router.get('/review/questions',control.getQuestions)
     router.get('/review/qna_get',control.getQNA)
     // router.get('/review/ans+score_insert',)
-    router.put('/review/ans_score_update',control.updateAnswer)
+    router.put('/review/ans_update',control.updateAnswer)
+    router.post('/review/ans_insert',control.insertAnswer)
+    router.put('/review/score_update',control.updateScore)
+    router.post('/review/score_insert',control.insertScore)
+    router.get('/review/get_topdown',control.getTopDown)
+    router.get('/review/get_dept_summary',control.getDeptSummary)
     
 
     return router
