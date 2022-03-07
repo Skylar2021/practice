@@ -69,7 +69,7 @@ for (let i of a) {
     b.push(i.uid)
 }
 console.log(b)
-*/
+
 
 let date = new Date()
 let YY = date.getFullYear()
@@ -95,4 +95,17 @@ function formatDate() {
     return [year, month, day].join('-');
 }
 console.log(formatDate()) //2022-02-22
+*/
+const rule = (mm, hh, DD,MM)=>{
+    let arr = new Array(5).fill("*")
+    if(mm) arr[0] = mm;
+    if(hh) arr[1] = hh;
+    if(DD) arr[2] = DD;
+    if(MM) arr[3] = MM;
+    return arr.join(" ")
+    
+}
+console.log(rule(50,15,4,3))
+
+
 
