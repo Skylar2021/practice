@@ -1,5 +1,3 @@
-import nodemailer from 'nodemailer';
-import schedule from 'node-schedule';
 
 let transporter = nodemailer.createTransport({
     host: "smtp.mail.hkbnes.net",
@@ -26,6 +24,11 @@ let today = () => {
     return [year, month, day].join('-');
 }
 
+let emailTitle = (name) => {
+    let subject = `eAppraisal Alert: Self review by ${name} done`
+    return subject
+}
+
 let emailContent = (name, deadline) => {
 
     let content_s =
@@ -38,7 +41,7 @@ let option = {
     from: "appraisal@mail.hkbnes.net",
     to: "skylar.wong@magazzin.com",
     //   to: "skylar.wong@magazzin.com",
-    subject: "testing",
+    subject: emailTitle('Sky'),
     text: emailContent('Sky', today())
 }
 
@@ -74,21 +77,21 @@ console.log(rule)
 */
 
 
-const rule = (mm, hh, DD,MM)=>{
+const rule = (mm, hh, DD, MM) => {
     let arr = new Array(5).fill("*")
-    if(mm) arr[0] = mm;
-    if(hh) arr[1] = hh;
-    if(DD) arr[2] = DD;
-    if(MM) arr[3] = MM;
+    if (mm) arr[0] = mm;
+    if (hh) arr[1] = hh;
+    if (DD) arr[2] = DD;
+    if (MM) arr[3] = MM;
     return arr.join(" ")
-    
+
 }
 
 
 // date-time array??????
 // date-time array??????
 // date-time array??????
-schedule.scheduleJob( rule(53,15,4,3), ()=>{
+schedule.scheduleJob(rule(53, 15, 4, 3), () => {
     // console.log("schedule job called")
     transporter.sendMail(option, (err, info) => {
         // console.log("transporter called")
@@ -96,10 +99,8 @@ schedule.scheduleJob( rule(53,15,4,3), ()=>{
             console.log(err)
             return
         }
-        if(info){
+        if (info) {
             console.log(info)
         }
     })
 });
-
-
