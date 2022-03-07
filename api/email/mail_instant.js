@@ -19,7 +19,7 @@ export class instantEmail {
                 //   pass: "password",
             },
         })
-        
+        this.receiverEmailAddress = receiverEmailAddress
         this.receiver = receiver
         this.deadline = deadline
     }
@@ -35,33 +35,36 @@ export class instantEmail {
         if (day.length < 2)
             day = '0' + day;
 
-        return [year, month, day].join('-');
+        // return [year, month, day].join('-');
+        return [day, month, year].join('-');
     }
     
-    emailContent = (receiver, deadline) => {
+    emailContent = () => {
 
         let content_s =
-            `${receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${deadline}.`
+            `${this.receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${this.deadline}.`
 
         return content_s
     }
-    messageInfo = (receiver, receiverEmailAddress) => {
+    messageInfo = () => {
         let option = {
             from: "appraisal@mail.hkbnes.net",
-            to: receiverEmailAddress,
+            to: this.receiverEmailAddress,
             //   to: "skylar.wong@magazzin.com",
-            subject: emailTitle(receiver),
-            text: emailContent(receiver, this.today())
+            subject: this.emailTitle(),
+            text: this.emailContent()
         }
+        // console.log(option)
         return option
     }
-    emailTitle = (receiver) => {
-        let subject = `eAppraisal Alert: Self review by ${receiver} done`
+    emailTitle = () => {
+        let subject = `eAppraisal Alert: Self review by ${this.receiver} done`
         return subject
     }
-    sendScheduleMail = () => {
-        transporter.sendMail(option, (err, info) => {
-            // console.log("transporter called")
+    sendInstantMail = () => {
+        this.transporter.sendMail(this.messageInfo(), (err, info) => {
+            console.log("transporter called")
+            // console.log(this.messageInfo)
             if (err) {
                 console.log(err)
                 return
@@ -74,7 +77,7 @@ export class instantEmail {
     }
 
 }
-
+/*
 let transporter = nodemailer.createTransport({
     host: "smtp.mail.hkbnes.net",
     port: 25,
@@ -150,7 +153,7 @@ rule.minute = 42
 // rule.tz = "Etc/GMT"
 // rule.tz = "Asia/Hong_Kong"
 console.log(rule)
-*/
+
 
 
 const rule = (mm, hh, DD, MM) => {
@@ -181,4 +184,4 @@ schedule.scheduleJob(rule(53, 15, 4, 3), () => {
     })
 });
 
-
+*/

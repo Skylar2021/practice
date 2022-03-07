@@ -1,3 +1,7 @@
+import nodemailer from 'nodemailer';
+import schedule from 'node-schedule';
+
+/*
 
 let transporter = nodemailer.createTransport({
     host: "smtp.mail.hkbnes.net",
@@ -74,7 +78,7 @@ rule.minute = 42
 // rule.tz = "Etc/GMT"
 // rule.tz = "Asia/Hong_Kong"
 console.log(rule)
-*/
+
 
 
 const rule = (mm, hh, DD, MM) => {
@@ -104,3 +108,14 @@ schedule.scheduleJob(rule(53, 15, 4, 3), () => {
         }
     })
 });
+*/
+
+// testing 
+/*
+import {instantEmail} from './mail_instant.js'
+
+let sendEmail = new instantEmail('07-03-2022', 'Skylar', "skylar.wong@magazzin.com")
+sendEmail.sendInstantMail()
+// sendEmail.messageInfo()
+
+*/
