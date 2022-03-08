@@ -109,6 +109,7 @@ export class scheduleEmail {
         });
     }
 }
+/*
 
 let a = {
     minute: 40,
@@ -120,3 +121,4 @@ let a = {
 let b = new scheduleEmail(a, '07-03-2022', 'Skylar', "skylar.wong@magazzin.com")
 
 b.sendScheduleMail()
+*/
