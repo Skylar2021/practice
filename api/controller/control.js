@@ -391,6 +391,26 @@ export default class Controller {
         }
     }
 
+    getScoreSummary = async (req, res) =>{
+        let staffId = req.body.staff_id
+        if(staffId){
+            try {
+                let result = await Review.getScoreSummaryById(staffId)
+                if (result) {
+                    console.log(result)
+                    res.status(200).json(result)
+                } else {
+                    res.status(400).json({ message: "no result" })
+                }
+
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!", error: err.message })
+            }
+        } else{
+            res.status(400).json({ message: "staff id empty" })
+        }
+    }
     getResult = async (req, res) =>{
         let staffId = req.body.staff_id
         if(staffId){

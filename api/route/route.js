@@ -25,6 +25,7 @@ export function route() {
     router.get('/review/score_get',control.getScores)
     router.put('/review/score_update',control.updateScore)
     router.post('/review/score_insert',control.insertScore)
+    router.get('/review/score_summary_get',control.getScoreSummary)
     router.get('/review/result_get',control.getResult)
     router.put('/review/result_update',control.updateResult)
     router.post('/review/result_insert',control.insertResult)

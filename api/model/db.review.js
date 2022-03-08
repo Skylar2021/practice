@@ -20,23 +20,23 @@ export class Review {
         }
     }
 
-    static async R(staff_id, assign_type){
-        
-            try {
-                let con = await sql.connect(sqlConfig)
-                let result = await con.request()
-                    .input('staff_id', sql.VarChar(50), staff_id)
-                    .input('assign_type', sql.VarChar(50), assign_type)
-                    .execute('get_my_summary')
-        
-                console.log(result)
-                return result.recordset
-            } catch (err) {
-                console.log(err)
-            }
-        
+    static async R(staff_id, assign_type) {
+
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('staff_id', sql.VarChar(50), staff_id)
+                .input('assign_type', sql.VarChar(50), assign_type)
+                .execute('get_my_summary')
+
+            console.log(result)
+            return result.recordset
+        } catch (err) {
+            console.log(err)
+        }
+
     }
-    
+
 
     static async getQuestionByFormId(form_id) {
         try {
@@ -138,7 +138,7 @@ export class Review {
         }
 
     }
-    
+
     static async scoreInsert(obj) {
         try {
             let con = await sql.connect(sqlConfig)
@@ -196,52 +196,65 @@ export class Review {
         }
 
     }
-    static async getTopDownList( staff_id,assign_type){
+    static async getTopDownList(staff_id, assign_type) {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
                 .input('staff_id', sql.VarChar(50), staff_id)
                 .input('assign_type', sql.VarChar(50), assign_type)
                 .execute('get_other_topdown')
-                // console.log(result)
-                console.log(result.recordset)
-                return result.recordset
+            // console.log(result)
+            console.log(result.recordset)
+            return result.recordset
         } catch (err) {
             console.log(err)
             return { error: err.message, message: "please try again" }
         }
     }
 
-    static async getDeptReview(staff_id){
+    static async getDeptReview(staff_id) {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
                 .input('dept_head_id', sql.VarChar(50), staff_id)
                 .execute('get_dept_summary')
-                // console.log(result)
-                console.log(result.recordset)
-                return result.recordset
+            // console.log(result)
+            console.log(result.recordset)
+            return result.recordset
         } catch (err) {
             console.log(err)
             return { error: err.message, message: "please try again" }
         }
     }
-    
-    static async getResultById(staff_id){
+
+    static async getScoreSummaryById(staff_id) {
         try {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
-            .input('staff_id', sql.VarChar(50), staff_id)
-            .execute('get_staff_score_summary')
+                .input('staff_id', sql.VarChar(50), staff_id)
+                .execute('get_staff_score_summary')
             console.log(result.recordset)
             return result.recordset[0]
         } catch (err) {
             console.log(err)
             return { error: err.message, message: "please try again" }
-            
+
         }
     }
-    static async resultInsert(obj){
+    static async getResultById(staff_id) {
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('staff_id', sql.VarChar(50), obj.staff_id)
+                .query("SELECT * FROM result where staff_id = @staff_id and year = convert(varchar(32),YEAR(getDate()))")
+                console.log(result.recordset)
+                return result.recordset[0]
+        } catch (err) {
+            console.log(err)
+            return { error: err.message, message: "please try again" }
+        }
+    }
+    static async resultInsert(obj) {
         console.log(obj)
         try {
             let con = await sql.connect(sqlConfig)
@@ -258,19 +271,19 @@ export class Review {
                 .input('promotion', sql.Bit, obj.promotion)
                 .input('promotion_txt', sql.VarChar(50), obj.promotion_txt)
                 .input('pass', sql.Bit, obj.pass)
-                .input('status', sql.Int, obj.status)               
+                .input('status', sql.Int, obj.status)
                 .query("INSERT INTO result(staff_id, reviewer_id, comment, score, terminate, extend,extend_txt, salary_adj,salary_adj_txt, promotion,promotion_txt, pass, last_upd_dt, completion_dt, status, year) VALUES (@staff_id, @reviewer_id, @comment, @score, @terminate, @extend,@extend_txt, @salary_adj,@salary_adj_txt, @promotion,@promotion_txt, @pass, GETDATE(), GETDATE(), @status, convert(varchar(32),YEAR(getDate())))")
             console.log(result)
             console.log({ rowsAffected: result.rowsAffected[0] })
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "insert failed, please try again",error:err.message  }
+            return { payload: obj, message: "insert failed, please try again", error: err.message }
 
         }
 
     }
-    static async resultUpdate(obj){
+    static async resultUpdate(obj) {
         console.log(obj)
         try {
             let con = await sql.connect(sqlConfig)
@@ -288,20 +301,20 @@ export class Review {
                 .input('promotion', sql.Bit, obj.promotion)
                 .input('promotion_txt', sql.VarChar(50), obj.promotion_txt)
                 .input('pass', sql.Bit, obj.pass)
-                .input('status', sql.Int, obj.status)               
+                .input('status', sql.Int, obj.status)
                 .query("UPDATE result SET comment = @comment,score = @score, terminate = @terminate, extend = @extend,extend_txt = @extend_txt, salary_adj = @salary_adj, salary_adj_txt = @salary_adj_txt, promotion = @promotion ,promotion_txt = @promotion_txt, pass = @pass, last_upd_dt = GETDATE(), completion_dt = GETDATE(), status = @status WHERE staff_id = @staff_id AND year = @year")
             console.log(result)
             console.log({ rowsAffected: result.rowsAffected[0] })
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "update failed, please try again",error:err.message }
+            return { payload: obj, message: "update failed, please try again", error: err.message }
 
         }
 
     }
-    
-    
+
+
 }
 /*
 let obj = {
@@ -334,7 +347,7 @@ let obj = {
     promotion_txt: null,
     pass: null,
     status: 3,
-    year: '2022'    
+    year: '2022'
 }
 // Review.resultUpdate(obj)
 // Review.scoreUpdate(obj)
