@@ -6,7 +6,7 @@ import { Review } from '../model/db.review.js'
 
 
 export default class Controller {
-    constructor(){
+    constructor() {
 
     }
 
@@ -195,6 +195,21 @@ export default class Controller {
             res.status(400).json({ message: "staff id empty" })
         }
     }
+    
+    get_tp_review_summary = async (req, res) => {
+        if (req.session.userData["staff_id"]) {
+            let staffId = req.session.userData["staff_id"]
+            try {
+                let result = await Review.getMySummary_td(staffId, 'T')
+                console.log(result)
+                res.status(200).json(result)
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!" })
+                
+            }
+        }
+    }
 
     getQuestions = async (req, res) => {
         let form_id = req.session.review["form_id"]
@@ -243,16 +258,19 @@ export default class Controller {
 
         }
     }
-
+// index = 0 >>> self
+// index = 1 >>> top down
     getScores = async (req, res) => {
         if (req.session.userData["staff_id"]) {
             try {
                 let result = await Review.getScoreByStaffId(req.session.userData["staff_id"])
-                if (result.rowsAffected) {
-
+                if (result) {
+                    console.log(result)
+                    res.status(200).json(result)
                 }
             } catch (err) {
-
+                console.log(err)
+                res.status(400).json({ message: "Please try again!" })
             }
 
         } else {
@@ -286,11 +304,11 @@ export default class Controller {
                     res.status(200).json({ message: "updated" })
                 } else {
                     res.status(400).json({ message: "fail to update" })
-                    
+
                 }
             } catch (err) {
                 res.status(400).json({ message: "Please try again!" })
-                
+
             }
         }
     }
@@ -323,55 +341,111 @@ export default class Controller {
 
                 }
             } catch (err) {
-                res.status(400).json({message: "Please try again!" })
+                res.status(400).json({ message: "Please try again!" })
 
             }
         }
     }
-    getTopDown = async (req, res)=>{
+    getTopDown = async (req, res) => {
         // get staff_id from session
         let staffId = req.body.staff_id
         console.log(staffId)
-        if(staffId){
+        if (staffId) {
             try {
-                let result = await Review.getTopDownList( staffId, 'T')
-                if(result){
+                let result = await Review.getTopDownList(staffId, 'T')
+                if (result) {
                     console.log(result)
                     res.status(200).json(result)
-                }else{
+                } else {
                     res.status(400).json({ message: "no result" })
 
                 }
-                
+
             } catch (err) {
                 console.log(err)
                 res.status(400).json({ message: "Please try again!", error: err.message })
-                
+
             }
         }
     }
-    getDeptSummary = async (req, res)=>{
+    getDeptSummary = async (req, res) => {
         // get staff_id from session
         let staffId = req.body.staff_id
         console.log(staffId)
-        if(staffId){
+        if (staffId) {
             try {
-                let result = await Review.getDeptReview( staffId)
-                if(result){
+                let result = await Review.getDeptReview(staffId)
+                if (result) {
                     console.log(result)
                     res.status(200).json(result)
-                }else{
+                } else {
                     res.status(400).json({ message: "no result" })
 
                 }
-                
+
             } catch (err) {
                 console.log(err)
                 res.status(400).json({ message: "Please try again!", error: err.message })
-                
+
             }
         }
     }
+
+    getResult = async (req, res) =>{
+        let staffId = req.body.staff_id
+        if(staffId){
+            try {
+                let result = await Review.getResultById(staffId)
+                if (result) {
+                    console.log(result)
+                    res.status(200).json(result)
+                } else {
+                    res.status(400).json({ message: "no result" })
+                }
+
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!", error: err.message })
+            }
+        } else{
+            res.status(400).json({ message: "staff id empty" })
+        }
+    }
+    insertResult = async (req, res) => {
+        if (req.body) {
+            console.log(req.body)
+            try {
+                let result = await Review.resultInsert(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({ message: "inserted" })
+                } else {
+                    res.status(400).json({ message: "fail to insert" })
+
+                }
+            } catch (err) {
+                res.status(400).json({ message: "Please try again!",error:err.message })
+
+            }
+        }
+    }
+    updateResult = async (req, res) => {
+        if (req.body) {
+            console.log(req.body)
+            try {
+                let result = await Review.resultUpdate(req.body)
+                if (result.rowsAffected) {
+                    res.status(200).json({ message: "updated" })
+                } else {
+                    res.status(400).json({ message: "fail to update" })
+
+                }
+            } catch (err) {
+                res.status(400).json({ message: "Please try again!",error:err.message })
+
+            }
+        }
+    }
+
 
 }
 
