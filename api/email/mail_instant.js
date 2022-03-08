@@ -7,8 +7,11 @@ export class testing extends nodemailer {
     }
 }
 */
+
+// self -> send email to tp appraiser
+// tp -> send email to subordinate
 export class instantEmail {
-    constructor( deadline,receiver,receiverEmailAddress){
+    constructor(deadline, receiver, receiverEmailAddress, assign_type = 'S') {
         this.transporter = nodemailer.createTransport({
             host: "smtp.mail.hkbnes.net",
             port: 25,
@@ -20,6 +23,8 @@ export class instantEmail {
             },
         })
         this.receiverEmailAddress = receiverEmailAddress
+        // this.apprEmailAddress = apprEmailAddress
+        this.assign_type = assign_type
         this.receiver = receiver
         this.deadline = deadline
     }
@@ -38,13 +43,15 @@ export class instantEmail {
         // return [year, month, day].join('-');
         return [day, month, year].join('-');
     }
-    
+
     emailContent = () => {
 
         let content_s =
-            `${this.receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${this.deadline}.`
-
-        return content_s
+            `${this.receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${this.deadline}.\n(This email is generated automatically by web appraisal system.)`
+        let content_tp =
+            `Your appraiser submitted your top-down review on ${this.today()}.\nYou can login to the following link to review it (This email is generated automatically by web appraisal system.)`
+        
+            return this.assign_type === 'S' ? content_s : content_tp
     }
     messageInfo = () => {
         let option = {
@@ -73,7 +80,7 @@ export class instantEmail {
                 console.log(info)
             }
         })
-        
+
     }
 
 }
