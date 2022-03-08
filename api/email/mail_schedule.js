@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import schedule from 'node-schedule';
-import { testing } from './mail';
+// import { testing } from './mail';
 
 /*
 let a = new testing()
@@ -21,13 +21,8 @@ time???? what circumstance
 
 
 export class scheduleEmail {
-    constructor(scheduleDateTime, deadline,receiver,receiverEmailAddress) {
-        // this.option = {
-        //     from: "appraisal@mail.hkbnes.net",
-        //     to: receiverEmailAddress,
-        //     subject,
-        //     text,
-        // }
+    constructor(scheduleDateTime, deadline, receiver, receiverEmailAddress) {
+
         this.transporter = nodemailer.createTransport({
             host: "smtp.mail.hkbnes.net",
             port: 25,
@@ -67,50 +62,61 @@ export class scheduleEmail {
         month: MM
     }
     */
-    rule = (scheduleDateTime) => {
+    rule = () => {
         let arr = new Array(5).fill("*")
-        if (scheduleDateTime.minute) arr[0] = scheduleDateTime.minute;
-        if (scheduleDateTime.hour) arr[1] = scheduleDateTime.hour;
-        if (scheduleDateTime.date) arr[2] = scheduleDateTime.date;
-        if (scheduleDateTime.month) arr[3] = scheduleDateTime.month;
+        if (this.scheduleDateTime.minute) arr[0] = this.scheduleDateTime.minute;
+        if (this.scheduleDateTime.hour) arr[1] = this.scheduleDateTime.hour;
+        if (this.scheduleDateTime.date) arr[2] = this.scheduleDateTime.date;
+        if (this.scheduleDateTime.month) arr[3] = this.scheduleDateTime.month;
         return arr.join(" ")
 
     }
-    emailContent = (receiver, deadline) => {
+    emailContent = () => {
 
         let content_s =
-            `${receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${deadline}.`
+            `${this.receiver} submitted self review on ${this.today()} and is looking forward to your top-down review.\nPlease login to the following link to process the review on or before ${this.deadline}.`
 
         return content_s
     }
-    messageInfo = (receiver, receiverEmailAddress) => {
+    messageInfo = () => {
         let option = {
             from: "appraisal@mail.hkbnes.net",
             to: this.receiverEmailAddress,
             //   to: "skylar.wong@magazzin.com",
-            subject: emailTitle(receiver),
-            text: emailContent(receiver, this.today())
+            subject: this.emailTitle(this.receiver),
+            text: this.emailContent(this.receiver, this.today())
         }
+
         return option
     }
-    emailTitle = (receiver) => {
-        let subject = `eAppraisal Alert: Self review by ${receiver} done`
+    emailTitle = () => {
+        let subject = `eAppraisal Alert: Self review by ${this.receiver} done`
         return subject
     }
     sendScheduleMail = () => {
-        schedule.scheduleJob(rule(53, 15, 4, 3), () => {
-            // console.log("schedule job called")
-            transporter.sendMail(option, (err, info) => {
-                // console.log("transporter called")
+        let job = schedule.scheduleJob(this.messageInfo(), () => {
+            console.log("schedule job called")
+            this.transporter.sendMail(this.messageInfo(), (err, info) => {
+                console.log("transporter called")
                 if (err) {
                     console.log(err)
                     return
                 }
-                if (info) {
-                    console.log(info)
-                }
+                console.log(info)
+                job.cancel()
+
             })
         });
     }
 }
 
+let a = {
+    minute: 40,
+    hour: 9,
+    date: 9,
+    month: 3
+}
+
+let b = new scheduleEmail(a, '07-03-2022', 'Skylar', "skylar.wong@magazzin.com")
+
+b.sendScheduleMail()
