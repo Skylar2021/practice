@@ -5,7 +5,7 @@ export function route() {
     let control = new Controller()
     const router = express.Router()
 
-    // router.get('/', control.getAllUserData)
+    router.get('/', control.getStaffInfo)
 
     //staff login, logout, password update
     router.post('/login', control.login)

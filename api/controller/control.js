@@ -32,13 +32,71 @@ export default class Controller {
         }
     }
     */
+    getStaffInfo = async (req,res) =>{
+        if (!req.body.id ) {
+            res.status(400)
+            res.json({ message: "Staff ID empty" })
+            return
+        }
+        try {
+            let userFound = await Staff.getStaffDataById(req.body.id)
+
+            console.log("userFound: ")
+            console.log(userFound)
+            if (!userFound) {
+                res.status(400).json({ message: "Staff ID not found" })
+                return
+            } else {
+            /*
+            else if (userFound.password.toString() === req.body.password) {
+                // let user = { "staff_id": userFound.staff_id, "username": userFound.name }
+                req.session.userData = {}
+                req.session.userData["staff_id"] = userFound.staff_id
+                req.session.userData["name"] = userFound.name
+                req.session.userData["chinese_name"] = userFound.chinese_name
+                req.session.userData["grade_id"] = userFound.grade_id
+                req.session.userData["position_id"] = userFound.position_id
+                req.session.userData["position_desc"] = userFound.position_desc
+                req.session.userData["dept_id"] = userFound.dept_id
+                req.session.userData["dept_name"] = userFound.dept_name
+                req.session.userData["dept_head_id"] = userFound.dept_head_id
+                req.session.userData["div_head_id"] = userFound.div_head_id
+                req.session.userData["final_score_id"] = userFound.final_score_id
+                req.session.userData["supervisor_id"] = userFound.supervisor_id
+                req.session.userData["date_joined"] = userFound.date_joined
+                req.session.userData["email"] = userFound.email
+                req.session.userData["reviewer_id"] = userFound.reviewer_id
+                req.session.userData["form_type_id"] = userFound.form_type_id
+                req.session.userData["form_id"] = userFound.form_id
+                req.session.userData["year"] = new Date().getFullYear()
+                console.log(req.session.userData)
+                // req.session.userData[""] = userFound.
+                let user = {
+                    staff_id: userFound.staff_id,
+                    name: userFound.name,
+                    chinese_name: userFound.chinese_name,
+                    dept: userFound.dept_name,
+                    position: userFound.position_desc,
+                    date_joined: userFound.date_joined,
+                    email: userFound.email
+                }
+                */
+                res.status(200).json({  user: userFound })
+
+            } 
+
+        } catch (err) {
+            res.status(400).json({ message: "try again! " })
+            console.log(err)
+        }
+    }
 
     login = async (req, res) => {
         console.log("login")
         console.log(req.session)
-        console.log("session id")
+        // console.log("session id")
         console.log(req.sessionID)
-        console.log(req.session?.userData)
+        // console.log(req.session?.userData)
         if (!req.body.id || !req.body.password) {
             res.status(400)
             res.json({ login: false, message: "Staff ID or password empty" })
@@ -87,8 +145,12 @@ export default class Controller {
                     chinese_name: userFound.chinese_name,
                     dept: userFound.dept_name,
                     position: userFound.position_desc,
+                    supervisor_id: userFound.supervisor_id,
                     date_joined: userFound.date_joined,
-                    email: userFound.email
+                    email: userFound.email,
+                    form_type_id : userFound.form_type_id,
+                    form_id : userFound.form_id,
+                    year : new Date().getFullYear()
                 }
                 res.status(200).json({ login: true, user: user })
 
