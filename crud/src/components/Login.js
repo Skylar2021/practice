@@ -1,8 +1,19 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { login, logout } from '../app/slice.js'
+// import { decrement, increment } from '../app/slice.js'
 
 
-export default function Login({ isLogin, idInput, pwdInput, handleInput, login }) {
+export default function Login({ idInput, pwdInput, handleInput }) {
+    const  isLogin  = useSelector(state => state.staff.isLogin)
+    // const count = useSelector((state) => state.counter.value)
+    const dispatch = useDispatch()
+   
+console.log(isLogin)
+ 
+    
+
     const idChange = (e) => {
         // console.log(123)
         let text = e.target.value
@@ -22,10 +33,11 @@ export default function Login({ isLogin, idInput, pwdInput, handleInput, login }
                 document.querySelector(".warning").innerHTML = ""
         }
     }, [idInput, pwdInput])
-    console.log(idInput, pwdInput)
+    // console.log(idInput, pwdInput)
 
     return (
         <>
+            {/*         
             <form onSubmit={(e) => {
                 e.preventDefault()
                 login(idInput, pwdInput)
@@ -42,6 +54,12 @@ export default function Login({ isLogin, idInput, pwdInput, handleInput, login }
                 </div>
                 <button id="login_btn" type="submit">log in</button>
             </form>
+             */}
+             
+            <h2>Login Status: {isLogin}</h2>
+            <button id='login' type="button" onClick={() => dispatch(login()) }>login</button>
+            <button id='logout' type="button" onClick={() =>  dispatch(logout()) }>logout</button>
+           
             <Link to="/register">create account</Link>
 
         </>
