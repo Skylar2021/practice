@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
 
-export default function Login({ isLogin, uidInput, pwdInput, handleInput, login }) {
-    const uidChange = (e) => {
+export default function Login({ isLogin, idInput, pwdInput, handleInput, login }) {
+    const idChange = (e) => {
         // console.log(123)
         let text = e.target.value
         // console.log(123)
-        handleInput("uid", text)
-        console.log(uidInput)
+        handleInput("id", text)
+        console.log(idInput)
 
     }
 
@@ -21,20 +21,20 @@ export default function Login({ isLogin, uidInput, pwdInput, handleInput, login 
             if (document.querySelector(".warning"))
                 document.querySelector(".warning").innerHTML = ""
         }
-    }, [uidInput, pwdInput])
-    console.log(uidInput, pwdInput)
+    }, [idInput, pwdInput])
+    console.log(idInput, pwdInput)
 
     return (
         <>
             <form onSubmit={(e) => {
                 e.preventDefault()
-                login(uidInput, pwdInput)
-                console.log(e.target.uid)
+                login(idInput, pwdInput)
+                console.log(e.target.id)
             }}
                 method="POST"
                 action="http://localhost:8080/login">
-                <label htmlFor="uid"><p>User ID</p></label>
-                <input id="uid" type="text" name="uid" value={uidInput} onChange={(e) => uidChange(e)} required></input>
+                <label htmlFor="id"><p>User ID</p></label>
+                <input id="id" type="text" name="id" value={idInput} onChange={(e) => idChange(e)} required></input>
                 <label htmlFor="password"><p>Password</p></label>
                 <input id="password" type="password" name="password" value={pwdInput} onChange={(e) => pwdChange(e)} required></input>
                 <div>

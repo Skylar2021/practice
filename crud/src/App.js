@@ -15,22 +15,22 @@ import NavLink from './components/NavLink';
 
 function App() {
     const [pwdInput, setPwdInput] = useState('')
-    const [uidInput, setUidInput] = useState('')
+    const [idInput, setIdInput] = useState('')
     const [userNameInput, setUserNameInput] = useState('')
     const [newPwdInput, setNewPwdInput] = useState('')
     const [currentUser, setCurrentUser] = useState("")
     const [isLogin, setIsLogin] = useState(false)
 
     let navigate = useNavigate();
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     //////////////////////////////////
 
     let a = async() =>{
-        return dispatch(testing())
+        // return dispatch(testing())
     }
 
-    console.log(a())
+    // console.log(a())
     //////////////////////////////////
 
     useEffect(() => {
@@ -41,9 +41,9 @@ function App() {
 
     const handleInput = (type, input) => {
 
-        if (type === "uid") {
-            console.log(uidInput)
-            return setUidInput(input)
+        if (type === "id") {
+            console.log(idInput)
+            return setIdInput(input)
         } else if (type === "pwd") {
             console.log(pwdInput)
             return setPwdInput(input)
@@ -66,19 +66,19 @@ function App() {
     // getAllUser()
 
     // ***** password -> string
-    const login = async (uid, password) => {
+    const login = async (id, password) => {
         try {
             let res = await fetch("http://localhost:8080/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ "uid": `${uid}`, "password": `${password}` }),
+                    body: JSON.stringify({ "id": `${id}`, "password": `${password}` }),
                     credentials: 'include'
                 })
             if (res.ok) {
                 let result = await res.json()
                 console.log(result)
-                handleInput("uid", "")
+                handleInput("id", "")
                 handleInput("pwd", "")
                 setIsLogin(true)
 
@@ -98,15 +98,15 @@ function App() {
         }
     }
 
-    const register = async ({ uid, password, username }) => {
+    const register = async ({ id, password, username }) => {
         let warning = document.querySelector(".warning")
-        if (uid && password && username) {
+        if (id && password && username) {
             try {
                 let res = await fetch("http://localhost:8080/register",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ "uid": `${uid}`, "password": `${password}`, "username": `${username}`, group: "G" })
+                        body: JSON.stringify({ "id": `${id}`, "password": `${password}`, "username": `${username}`, group: "G" })
                     })
                 if (res.ok) {
                     let result = await res.json()
@@ -152,13 +152,13 @@ function App() {
     }
     // logout()
 
-    const delAC = async (uid) => {
-        if (uid) {
+    const delAC = async (id) => {
+        if (id) {
             try {
-                let res = await fetch("http://localhost:8080/del-ac/" + uid, {
+                let res = await fetch("http://localhost:8080/del-ac/" + id, {
                     method: 'DELETE',
                     header: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ "uid": uid })
+                    body: JSON.stringify({ "id": id })
                 })
                 if (res.ok) {
                     let result = await res.json()
@@ -180,15 +180,15 @@ function App() {
 
     // delAC("skylar")
 
-    const pwdChange = async (uid, password) => {
-        if (!uid && !password) {
+    const pwdChange = async (id, password) => {
+        if (!id && !password) {
             return
         }
-        let data = { uid, password }
+        let data = { id, password }
         console.log(data)
 
         try {
-            let res = await fetch(`http://localhost:8080/pwdchange/${uid}`, {
+            let res = await fetch(`http://localhost:8080/pwdchange/${id}`, {
                 method: 'PUT',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
@@ -223,14 +223,14 @@ function App() {
                             <Reg handleInput={handleInput}
                                 register={register}
                                 pwdInput={pwdInput}
-                                uidInput={uidInput} />}>
+                                idInput={idInput} />}>
                     </Route>
                     <Route path="/" exact index
                         element={
                             <Login handleInput={handleInput}
                                 login={login}
                                 pwdInput={pwdInput}
-                                uidInput={uidInput} />} />
+                                idInput={idInput} />} />
                     <Route path="*" element={<NF />} />
                 </Routes>
             </header>

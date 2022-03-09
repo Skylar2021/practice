@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-export default function Reg({ uidInput, pwdInput, userNameInput, handleInput, register }) {
-    const uidChange = (e) => {
+export default function Reg({ idInput, pwdInput, userNameInput, handleInput, register }) {
+    const idChange = (e) => {
         let text = e.target.value
-        handleInput("uid", text)
-        console.log(uidInput)
+        handleInput("id", text)
+        console.log(idInput)
 
     }
 
@@ -24,25 +24,25 @@ export default function Reg({ uidInput, pwdInput, userNameInput, handleInput, re
                 document.querySelector(".warning").innerHTML = ""
             }
         }
-    }, [uidInput, pwdInput, userNameInput])
+    }, [idInput, pwdInput, userNameInput])
 
     return (
         <>
             <form onSubmit={(e) => {
                 e.preventDefault()
                 let user = {
-                    uid: e.target.uid.value,
+                    id: e.target.id.value,
                     password: e.target.password.value,
                     username: e.target.username.value
                 }
                 console.log(user)
                 register(user)
-                console.log(e.target.uid)
+                console.log(e.target.id)
             }}
                 method="POST"
                 action="http://localhost:8080/register">
-                <label htmlFor="uid"><p>User ID</p></label>
-                <input id="uid" type="text" name="uid" value={uidInput} onChange={(e) => uidChange(e)} required></input>
+                <label htmlFor="id"><p>User ID</p></label>
+                <input id="id" type="text" name="id" value={idInput} onChange={(e) => idChange(e)} required></input>
                 <label htmlFor="username"><p>User Name</p></label>
                 <input id="username" type="text" name="username" value={userNameInput} onChange={(e) => usernameChange(e)} required></input>
 

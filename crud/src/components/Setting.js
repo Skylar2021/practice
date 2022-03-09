@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import cookies from 'react-cookies';
 
 export default function Setting({ logout, currentUser, delAC, pwdChange, handleInput, newPwdInput }) {
-    const delAccount = async (uid) => {
-        console.log(uid)
+    const delAccount = async (id) => {
+        console.log(id)
         let del = window.confirm("Confirm delete?")
-        if (del && uid) {
-            delAC(uid)
+        if (del && id) {
+            delAC(id)
 
         }
     }
@@ -20,10 +20,10 @@ export default function Setting({ logout, currentUser, delAC, pwdChange, handleI
 
     }
     // let password = document.querySelector('.change_password')
-    const confirmNewPwd = (uid, newPwd) => {
+    const confirmNewPwd = (id, newPwd) => {
         let confirmChange = window.confirm("Confirm password change?")
-        if (confirmChange && newPwd && uid) {
-            pwdChange(uid, newPwd)
+        if (confirmChange && newPwd && id) {
+            pwdChange(id, newPwd)
         }
     }
 
@@ -38,9 +38,9 @@ export default function Setting({ logout, currentUser, delAC, pwdChange, handleI
     console.log("cookies's storage: ",cookies.load('user'))
     return (
         <>
-            <h2 className="user">{cookies.load('user')?.username ? `User: ${cookies.load('user')?.username}` : "no user login"}</h2>
+            <h2 className="user">{cookies.load('user')?.name ? `User: ${cookies.load('user')?.name}` : "no user login"}</h2>
             <button id="logout_btn" type="button" onClick={() => { logout(currentUser) }}>log out</button>
-            {/* <button id="del_btn" type="button" onClick={() => { delAccount(currentUser.uid) }}>delete my account</button> */}
+            {/* <button id="del_btn" type="button" onClick={() => { delAccount(currentUser.id) }}>delete my account</button> */}
             <p>---------------------------------------------------------</p>
             <input
                 placeholder="enter new password here"
@@ -51,8 +51,8 @@ export default function Setting({ logout, currentUser, delAC, pwdChange, handleI
                 value={newPwdInput} required />
             <button id="change_pwd_btn" type="button"
                 onClick={() => {
-                    console.log({ "uid": currentUser.uid, "pwd": newPwdInput })
-                    confirmNewPwd(currentUser.uid, newPwdInput)
+                    console.log({ "id": currentUser.id, "pwd": newPwdInput })
+                    confirmNewPwd(currentUser.id, newPwdInput)
 
                 }}>change password</button>
         </>
