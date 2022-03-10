@@ -1,31 +1,65 @@
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import cookies from 'react-cookies';
+
 import { login, logout } from '../app/slice.js'
 // import { decrement, increment } from '../app/slice.js'
 
 
-export default function Login({ idInput, pwdInput, handleInput }) {
-    const  isLogin  = useSelector(state => state.staff.isLogin)
-    // const count = useSelector((state) => state.counter.value)
+export default function Login() {
     const dispatch = useDispatch()
-   
-console.log(isLogin)
- 
-    
+    const navigate = useNavigate();
 
+    const [pwdInput, setPwdInput] = useState('')
+    const [idInput, setIdInput] = useState('')
+    const {isLogin,currentUser} = useSelector(state=>state.loginOut)
+
+    const handleLogin = async (id, password) => {
+        
+        try {
+            let res = await fetch("http://localhost:8080/login",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "id": `${id}`, "password": `${password}` }),
+                    credentials: 'include'
+                })
+            if (res.ok) {
+                let result = await res.json()
+                console.log(result)
+                setPwdInput("")
+                setIdInput("")
+                cookies.save("user", result.user)
+                dispatch(login())
+
+                // setCurrentUser(cookies.load('user'))
+                // navigate('/setting')
+                navigate('/')
+
+            } else {
+                let result = await res.json()
+                console.log(result)
+                document.querySelector(".warning").innerHTML = `${result.message}`
+
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
     const idChange = (e) => {
         // console.log(123)
         let text = e.target.value
-        // console.log(123)
-        handleInput("id", text)
-        console.log(idInput)
+        console.log(text)
+        setIdInput(text)
 
     }
 
     const pwdChange = e => {
         let text = e.target.value
-        handleInput("pwd", text)
+        console.log(text)
+        setPwdInput(text)
     }
     useEffect(() => {
         return () => {
@@ -37,11 +71,11 @@ console.log(isLogin)
 
     return (
         <>
-            {/*         
+                    
             <form onSubmit={(e) => {
                 e.preventDefault()
-                login(idInput, pwdInput)
-                console.log(e.target.id)
+                handleLogin(idInput, pwdInput)
+                console.log("login button clicked")
             }}
                 method="POST"
                 action="http://localhost:8080/login">
@@ -54,12 +88,12 @@ console.log(isLogin)
                 </div>
                 <button id="login_btn" type="submit">log in</button>
             </form>
-             */}
-             
-            <h2>Login Status: {isLogin}</h2>
-            <button id='login' type="button" onClick={() => dispatch(login()) }>login</button>
-            <button id='logout' type="button" onClick={() =>  dispatch(logout()) }>logout</button>
-           
+            
+
+            {/* <h2>Login Status: {isLogin}</h2>
+            <button id='login' type="button" onClick={() => dispatch(login())}>login</button>
+            <button id='logout' type="button" onClick={() => dispatch(logout())}>logout</button> */}
+
             <Link to="/register">create account</Link>
 
         </>
