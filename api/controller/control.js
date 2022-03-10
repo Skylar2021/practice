@@ -98,13 +98,11 @@ export default class Controller {
         console.log(req.sessionID)
         // console.log(req.session?.userData)
         if (!req.body.id || !req.body.password) {
-            res.status(400)
-            res.json({ login: false, message: "Staff ID or password empty" })
+            res.status(400).json({ login: false, message: "Staff ID or password empty" })
             return
         }
         if (req.session.userData) {
-            res.status(400)
-            res.json({ login: true, user: req.session.userData, message: "user logged in alreday" })
+            res.status(400).json({ login: true, user: req.session.userData, message: "user logged in alreday" })
             return
         }
         try {
@@ -113,8 +111,7 @@ export default class Controller {
             console.log("userFound: ")
             console.log(userFound)
             if (!userFound) {
-                res.status(400)
-                res.json({ login: false, message: "Staff ID not found" })
+                res.status(400).json({ login: false, message: "Staff ID not found" })
                 return
             } else if (userFound.password.toString() === req.body.password) {
                 // let user = { "staff_id": userFound.staff_id, "username": userFound.name }
@@ -145,6 +142,7 @@ export default class Controller {
                     chinese_name: userFound.chinese_name,
                     dept: userFound.dept_name,
                     position: userFound.position_desc,
+                    grade:userFound.grade_id,
                     supervisor_id: userFound.supervisor_id,
                     date_joined: userFound.date_joined,
                     email: userFound.email,
@@ -175,6 +173,7 @@ export default class Controller {
         if (req.session.userData) {
             res.status(200).json({ login: false, message: `user ${req.session.userData.name} logout` })
             req.session.destroy()
+            console.log("session destroyed")
 
         } else {
 
