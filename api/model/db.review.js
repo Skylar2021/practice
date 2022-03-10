@@ -20,7 +20,7 @@ export class Review {
         }
     }
 
-    static async R(staff_id, assign_type) {
+    static async getMySummary_td(staff_id, assign_type) {
 
         try {
             let con = await sql.connect(sqlConfig)
