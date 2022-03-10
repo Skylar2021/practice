@@ -12,6 +12,7 @@ import NF from './components/404nf';
 import Setting from './components/Setting';
 import Reg from './components/Reg';
 import NavLink from './components/NavLink';
+import Summary from './components/Summary';
 
 function App() {
     const [pwdInput, setPwdInput] = useState('')
@@ -66,37 +67,7 @@ function App() {
     // getAllUser()
 
     // ***** password -> string
-    const login = async (id, password) => {
-        try {
-            let res = await fetch("http://localhost:8080/login",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ "id": `${id}`, "password": `${password}` }),
-                    credentials: 'include'
-                })
-            if (res.ok) {
-                let result = await res.json()
-                console.log(result)
-                handleInput("id", "")
-                handleInput("pwd", "")
-                setIsLogin(true)
-
-                cookies.save("user", result.user)
-                setCurrentUser(cookies.load('user'))
-                navigate('/setting')
-
-            } else {
-                let result = await res.json()
-                console.log(result)
-                document.querySelector(".warning").innerHTML = `${result.message}`
-
-            }
-
-        } catch (err) {
-            console.log(err)
-        }
-    }
+    
 
     const register = async ({ id, password, username }) => {
         let warning = document.querySelector(".warning")
@@ -141,7 +112,7 @@ function App() {
                 setIsLogin(false)
                 cookies.remove('user')
                 setCurrentUser('')
-                navigate('/')
+                navigate('/login')
 
             }
 
@@ -225,12 +196,14 @@ function App() {
                                 pwdInput={pwdInput}
                                 idInput={idInput} />}>
                     </Route>
-                    <Route path="/" exact index
+                    <Route path="/login" 
                         element={
                             <Login handleInput={handleInput}
-                                login={login}
+                                // login={login}
                                 pwdInput={pwdInput}
                                 idInput={idInput} />} />
+                    <Route path="/" exact index
+                        element={<Summary/>} />
                     <Route path="*" element={<NF />} />
                 </Routes>
             </header>
