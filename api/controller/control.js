@@ -150,7 +150,7 @@ export default class Controller {
                     form_id : userFound.form_id,
                     year : new Date().getFullYear()
                 }
-                res.status(200).json({ login: true, user: user })
+                res.status(200).json({ login: true, userData: user })
 
             } else if (userFound.password.toString() !== req.body.password) {
                 res.status(400)
@@ -231,11 +231,16 @@ export default class Controller {
     }
 
     get_self_review_summary = async (req, res) => {
+        console.log("session")
+        
+        console.log(req.session)
+        console.log("userData")
+        console.log(req.session.userData["staff_id"])
         let assign_type = 'S'
         // let staffId = req.body.id
-        let staffId = req.session.userData["staff_id"]
-        console.log("staff_id:", staffId)
-        if (staffId) {
+        if (req.session.userData["staff_id"]) {
+            let staffId = req.session.userData["staff_id"]
+            console.log("staff_id:", staffId)
             try {
                 let result = await Review.get_self_review(staffId, assign_type)
                 if (result) {
@@ -257,7 +262,13 @@ export default class Controller {
         }
     }
     
-    get_tp_review_summary = async (req, res) => {
+    get_td_review_summary = async (req, res) => {
+        console.log("user")
+        
+        console.log(req.session.user["staff_id"])
+        console.log("userData")
+        console.log(req.session.userData["staff_id"])
+        
         if (req.session.userData["staff_id"]) {
             let staffId = req.session.userData["staff_id"]
             try {
@@ -269,6 +280,8 @@ export default class Controller {
                 res.status(400).json({ message: "Please try again!" })
                 
             }
+        } else {
+            res.status(400).json({ message: "staff id empty" })
         }
     }
 

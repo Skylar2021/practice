@@ -10,8 +10,8 @@ function NavLink({ isLogin }) {
             </>} */}
             <>
                 <Link className="navlink" to="/setting">Setting</Link>
-                <Link className="navlink" to="/login">login</Link>
-                <Link className="navlink" to="/">My Summary</Link>
+                <Link className="navlink" to="/">login</Link>
+                <Link className="navlink" to="/summary">My Summary</Link>
                 {/* <Link className="navlink" to="/register">register</Link> */}
             </>
         </nav>

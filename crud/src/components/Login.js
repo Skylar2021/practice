@@ -30,12 +30,12 @@ export default function Login() {
                 console.log(result)
                 setPwdInput("")
                 setIdInput("")
-                cookies.save("user", result.user)
+                cookies.save("userData", result.userData)
                 dispatch(login())
 
                 // setCurrentUser(cookies.load('user'))
                 // navigate('/setting')
-                navigate('/')
+                navigate('/summary')
 
             } else {
                 let result = await res.json()

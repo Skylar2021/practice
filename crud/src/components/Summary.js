@@ -4,21 +4,36 @@ import cookies from 'react-cookies';
 export default function Summary(){
 
     useEffect(()=>{
-        const reviewData = async()=>{
-            console.log('fired')
+        const selfReviewData = async()=>{
+            console.log('selfReviewData fired')
             let res = await fetch("http://localhost:8080/review/get_self_review_summary")
             if(res.ok){
                 let result = await res.json()
                 console.log(result)
-                cookies.save('review',result)
+                cookies.save('self_review',result)
             }
         }
-        reviewData()
+        selfReviewData()
+    },[])
+
+    useEffect(()=>{
+        const topDownReviewData = async()=>{
+            console.log('selfReviewData fired')
+            let res = await fetch("http://localhost:8080/review/get_td_review_summary")
+            if(res.ok){
+                let result = await res.json()
+                console.log(result)
+                cookies.save('top_down_review',result)
+            }
+        }
+        topDownReviewData()
     },[])
 
     return(
         <>
+        {console.log(cookies.loadAll())}
         <h1>Employee Information<br/>職員資料</h1>
+        {/*
         <table border="1px">
             <thead>
                 <tr>
@@ -30,12 +45,12 @@ export default function Summary(){
                     <th>Grade<br/>職級</th>
                 </tr>
                 <tr>
-                    <td>{cookies.load('user').staff_id}</td>
-                    <td>{cookies.load('user').name}</td>
-                    <td>{cookies.load('user').dept}</td>
-                    <td>{cookies.load('user').position}</td>
-                    <td>{cookies.load('user').date_joined.slice(0,(cookies.load('user').date_joined.indexOf('T')))}</td>
-                    <td>{cookies.load('user').grade}</td>
+                    <td>{cookies.load('user')?.staff_id}</td>
+                    <td>{cookies.load('user')?.name}</td>
+                    <td>{cookies.load('user')?.dept}</td>
+                    <td>{cookies.load('user')?.position}</td>
+                    <td>{cookies.load('user')?.date_joined?.slice(0,(cookies.load('user').date_joined.indexOf('T')))}</td>
+                    <td>{cookies.load('user')?.grade}</td>
                  
                 </tr>
             </thead>
@@ -50,10 +65,10 @@ export default function Summary(){
                     <th>Status</th>
                 </tr>
                 <tr>
-                    <td>{cookies.load('review').t_id ? cookies.load('review').t_id: "start self review(link)"}</td>
-                    <td>{cookies.load('review').close_date}</td>
-                    <td>{cookies.load('review').completion_dt}</td>
-                    <td>{cookies.load('review').status}</td>
+                    <td>{cookies.load('self_review')?.t_id ? cookies.load('self_review').t_id: "start self review(link)"}</td>
+                    <td>{cookies.load('self_review')?.close_date}</td>
+                    <td>{cookies.load('self_review')?.completion_dt.slice(0,(cookies.load('self_review').date_joined.indexOf('T')))}</td>
+                    <td>{cookies.load('self_review')?.status}</td>
                 </tr>
             </thead>
         </table>
@@ -70,15 +85,17 @@ export default function Summary(){
                 </tr>
                 <tr>
                     
-                    <td>{cookies.load('user').name}</td>
-                    <td>{cookies.load('user').dept}</td>
-                    <td>{cookies.load('user').position}</td>
-                    <td>{cookies.load('user').date_joined.slice(0,(cookies.load('user').date_joined.indexOf('T')))}</td>
-                    <td>{cookies.load('user').grade}</td>
+                    <td>{cookies.load('top_down_review')?.name}</td>
+                    <td>{cookies.load('top_down_review')?.dept_name}</td>
+                    <td>{cookies.load('top_down_review')?.position_desc}</td>
+                    <td>{cookies.load('top_down_review')?.completion_dt.slice(0,(cookies.load('top_down_review').date_joined.indexOf('T')))}</td>
+                    <td>{cookies.load('top_down_review')?.status}</td>
+                    <td>{cookies.load('top_down_review')?.t_id ? cookies.load('top_down_review').t_id : "top down review not completed"}</td>
                  
                 </tr>
             </thead>
         </table>
+        */}
         </>
     )
 }

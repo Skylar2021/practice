@@ -81,7 +81,7 @@ function App() {
                     })
                 if (res.ok) {
                     let result = await res.json()
-                    navigate('/')
+                    // navigate('/')
                     console.log(result)
                 } else {
                     let result = await res.json()
@@ -112,7 +112,7 @@ function App() {
                 setIsLogin(false)
                 cookies.remove('user')
                 setCurrentUser('')
-                navigate('/login')
+                navigate('/')
 
             }
 
@@ -196,13 +196,13 @@ function App() {
                                 pwdInput={pwdInput}
                                 idInput={idInput} />}>
                     </Route>
-                    <Route path="/login" 
+                    <Route path="/" exact index
                         element={
                             <Login handleInput={handleInput}
                                 // login={login}
                                 pwdInput={pwdInput}
                                 idInput={idInput} />} />
-                    <Route path="/" exact index
+                    <Route path="/summary" 
                         element={<Summary/>} />
                     <Route path="*" element={<NF />} />
                 </Routes>
