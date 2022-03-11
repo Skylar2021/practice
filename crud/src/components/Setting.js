@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import cookies from 'react-cookies';
 
-export default function Setting({ logout, currentUser, delAC, pwdChange, handleInput, newPwdInput }) {
+export default function Setting({ handleLogout, currentUser, delAC, pwdChange, handleInput, newPwdInput }) {
     const delAccount = async (id) => {
         console.log(id)
         let del = window.confirm("Confirm delete?")
@@ -34,12 +34,12 @@ export default function Setting({ logout, currentUser, delAC, pwdChange, handleI
         //     setCurrentUser(cookies.load('user'))
         // }
     // },[])
-    console.log(currentUser)
-    console.log("cookies's storage: ",cookies.load('user'))
+    console.log("currentUser: ",currentUser)
+    console.log("cookies's storage: ",cookies.load('userData'))
     return (
         <>
-            <h2 className="user">{cookies.load('user')?.name ? `User: ${cookies.load('user')?.name}` : "no user login"}</h2>
-            <button id="logout_btn" type="button" onClick={() => { logout(currentUser) }}>log out</button>
+            <h2 className="user">{cookies.load('userData')?.name ? `User: ${cookies.load('userData')?.name}` : "no user login"}</h2>
+            <button id="logout_btn" type="button" onClick={() => { handleLogout(currentUser) }}>log out</button>
             {/* <button id="del_btn" type="button" onClick={() => { delAccount(currentUser.id) }}>delete my account</button> */}
             <p>---------------------------------------------------------</p>
             <input

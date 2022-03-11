@@ -35,7 +35,7 @@ export default function Login() {
 
                 // setCurrentUser(cookies.load('user'))
                 // navigate('/setting')
-                navigate('/summary')
+                navigate('/setting')
 
             } else {
                 let result = await res.json()

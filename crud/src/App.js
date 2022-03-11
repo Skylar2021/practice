@@ -98,7 +98,7 @@ function App() {
         }
     }
 
-    const logout = async (currentUser) => {
+    const handleLogout = async (currentUser) => {
         try {
             let res = await fetch("http://localhost:8080/logout", {
                 method: "POST",
@@ -110,7 +110,9 @@ function App() {
                 let result = await res.json()
                 console.log(result)
                 setIsLogin(false)
-                cookies.remove('user')
+                cookies.remove('userData')
+                cookies.remove('top_down_review')
+                cookies.remove('self_review')
                 setCurrentUser('')
                 navigate('/')
 
@@ -182,7 +184,7 @@ function App() {
                 {/* <img src={logo} className="App-logo" alt="logo" /> */}
                 <Routes>
                     <Route path="/setting" element={
-                        <Setting logout={logout}
+                        <Setting handleLogout={handleLogout}
                             delAC={delAC}
                             pwdChange={pwdChange}
                             handleInput={handleInput}

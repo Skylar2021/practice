@@ -94,7 +94,7 @@ export default class Controller {
     login = async (req, res) => {
         console.log("login")
         console.log(req.session)
-        // console.log("session id")
+        console.log("session id")
         console.log(req.sessionID)
         // console.log(req.session?.userData)
         if (!req.body.id || !req.body.password) {
@@ -134,7 +134,8 @@ export default class Controller {
                 req.session.userData["form_type_id"] = userFound.form_type_id
                 req.session.userData["form_id"] = userFound.form_id
                 req.session.userData["year"] = new Date().getFullYear()
-                console.log(req.session.userData)
+                console.log("req.session.userData")
+                console.log(req.session)
                 // req.session.userData[""] = userFound.
                 let user = {
                     staff_id: userFound.staff_id,
@@ -167,8 +168,9 @@ export default class Controller {
         // session destory
         console.log("logout")
 
+        console.log("req.session")
         console.log(req.session)
-        console.log(req.session.userData)
+        // console.log(req.session.userData)
 
         if (req.session.userData) {
             res.status(200).json({ login: false, message: `user ${req.session.userData.name} logout` })
@@ -231,18 +233,20 @@ export default class Controller {
     }
 
     get_self_review_summary = async (req, res) => {
-        console.log("session")
         
+
+        console.log("req.session")
         console.log(req.session)
-        console.log("userData")
-        console.log(req.session.userData["staff_id"])
         let assign_type = 'S'
-        // let staffId = req.body.id
-        if (req.session.userData["staff_id"]) {
-            let staffId = req.session.userData["staff_id"]
+        let staffId = req.session.userData == true ? req.session.userData["staff_id"] : req.body.id
+        console.log(staffId)
+
+        
+        if (staffId) {
+            
             console.log("staff_id:", staffId)
             try {
-                let result = await Review.get_self_review(staffId, assign_type)
+                let result = await Review.getSummary_self(staffId, assign_type)
                 if (result) {
                     req.session.review = {}
                     req.session.review["t_id"] = result.t_id
@@ -260,19 +264,18 @@ export default class Controller {
         } else {
             res.status(400).json({ message: "staff id empty" })
         }
+        
     }
     
     get_td_review_summary = async (req, res) => {
-        console.log("user")
         
-        console.log(req.session.user["staff_id"])
         console.log("userData")
-        console.log(req.session.userData["staff_id"])
-        
-        if (req.session.userData["staff_id"]) {
-            let staffId = req.session.userData["staff_id"]
+        console.log(req.session.userData)
+        let staffId = req.session.userData == true ? req.session.userData["staff_id"] : req.body.id
+        if (staffId) {
+           
             try {
-                let result = await Review.getMySummary_td(staffId, 'T')
+                let result = await Review.getSummary_td(staffId, 'T')
                 console.log(result)
                 res.status(200).json(result)
             } catch (err) {
