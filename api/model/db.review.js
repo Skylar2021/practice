@@ -4,7 +4,7 @@ import { sqlConfig } from './db.config.js'
 
 export class Review {
 
-    static async get_self_review(staff_id, assign_type) {
+    static async getSummary_self(staff_id, assign_type) {
         // assign_type default = 'S'
         try {
             let con = await sql.connect(sqlConfig)
@@ -20,7 +20,7 @@ export class Review {
         }
     }
 
-    static async getMySummary_td(staff_id, assign_type) {
+    static async getSummary_td(staff_id, assign_type) {
 
         try {
             let con = await sql.connect(sqlConfig)
@@ -30,7 +30,7 @@ export class Review {
                 .execute('get_my_summary')
 
             console.log(result)
-            return result.recordset
+            return result.recordset[0]
         } catch (err) {
             console.log(err)
         }

@@ -15,8 +15,8 @@ export function route() {
     // router.post('/register', control.register)
     
     // review
-    router.get('/review/get_self_review_summary',control.get_self_review_summary)
-    router.get('/review/get_td_review_summary',control.get_td_review_summary)
+    router.post('/review/get_self_review_summary',control.get_self_review_summary)
+    router.post('/review/get_td_review_summary',control.get_td_review_summary)
     router.get('/review/questions',control.getQuestions)
     router.get('/review/qna_get',control.getQNA)
     // router.get('/review/ans+score_insert',)
