@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 // import counterReducer  from './slice'
-import inAndOutSlice from './slice'
+import staffInfo from './slice'
 
 const reducer = {
   // counter: counterReducer
-  loginOut: inAndOutSlice
+  staff: staffInfo
 }
 
 const store = configureStore({

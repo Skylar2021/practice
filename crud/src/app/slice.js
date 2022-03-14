@@ -2,7 +2,9 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
 const initialState = {
     isLogin: false,
-    currentUser:"",
+    self_review: {},
+    top_down_review: {}
+    // currentUser:"",
     // pwd: "",
     // id: ""
 }
@@ -19,7 +21,7 @@ const initialState = {
 // )
 
 
-export const inAndOutSlice = createSlice({
+export const staffInfo = createSlice({
     name: 'Log in and out',
     initialState,
     reducers:{ //non-async reducers
@@ -30,11 +32,11 @@ export const inAndOutSlice = createSlice({
         logout: (state) => {
             state.isLogin = false
         },
-        handleIdInput:(state, action)=>{
-            state.idInput = action.payload
+        selfReview:(state, action)=>{
+            state.self_review = action.payload
         },
-        handlePwdInput:(state, action)=>{
-            state.pwdInput = action.payload
+        tdReview:(state, action)=>{
+            state.top_down_review = action.payload
         },
     },
     extraReducers: { // async reducers 
@@ -44,6 +46,6 @@ export const inAndOutSlice = createSlice({
       }
 })
 
-export const {login, logout} = inAndOutSlice.actions
-export default inAndOutSlice.reducer
+export const {login, logout,selfReview,tdReview} = staffInfo.actions
+export default staffInfo.reducer
 
