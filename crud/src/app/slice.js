@@ -3,7 +3,8 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 const initialState = {
     isLogin: false,
     self_review: {},
-    top_down_review: {}
+    top_down_review: {},
+    questionsBank:[]
     // currentUser:"",
     // pwd: "",
     // id: ""
@@ -38,6 +39,9 @@ export const staffInfo = createSlice({
         tdReview:(state, action)=>{
             state.top_down_review = action.payload
         },
+        getQuestions: (state, action) =>{
+            state.questionsBank =action.payload
+        }
     },
     extraReducers: { // async reducers 
         // [testing.fulfilled]: (state, action) => {
