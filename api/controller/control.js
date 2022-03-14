@@ -289,7 +289,7 @@ export default class Controller {
     }
 
     getQuestions = async (req, res) => {
-        let form_id = req.session.review["form_id"]
+        let form_id = req.session.userData?.form_id
         if (form_id) {
             try {
                 let result = await Review.getQuestionByFormId(form_id)
