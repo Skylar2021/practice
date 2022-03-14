@@ -3,7 +3,6 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import cookies from 'react-cookies';
 import { useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import {testing} from './app/slice'
 
 // import logo from './logo.svg';
 import './App.css';
@@ -13,6 +12,7 @@ import Setting from './components/Setting';
 import Reg from './components/Reg';
 import NavLink from './components/NavLink';
 import Summary from './components/Summary';
+import SelfReview from './components/SelfReview';
 
 function App() {
     const [pwdInput, setPwdInput] = useState('')
@@ -23,20 +23,10 @@ function App() {
     const [isLogin, setIsLogin] = useState(false)
 
     let navigate = useNavigate();
-    // const dispatch = useDispatch()
-
-    //////////////////////////////////
-
-    let a = async() =>{
-        // return dispatch(testing())
-    }
-
-    // console.log(a())
-    //////////////////////////////////
 
     useEffect(() => {
-        if (cookies.load('user')) {
-            setCurrentUser(cookies.load('user'))
+        if (cookies.load('userData')) {
+            setCurrentUser(cookies.load('userData'))
         }
     }, [])
 
@@ -57,17 +47,6 @@ function App() {
         }
 
     }
-    /*
-        const getAllUser = async () => {
-            let res = await fetch("http://localhost:8080/")
-            let data = await res.json()
-            console.log(data)
-        }
-        */
-    // getAllUser()
-
-    // ***** password -> string
-    
 
     const register = async ({ id, password, username }) => {
         let warning = document.querySelector(".warning")
@@ -137,7 +116,7 @@ function App() {
                     let result = await res.json()
                     console.log(result)
                     setIsLogin(false)
-                    cookies.remove('user')
+                    cookies.remove('userData')
                     setCurrentUser('')
                     setNewPwdInput('')
                     navigate('/')
@@ -151,7 +130,6 @@ function App() {
         }
     }
 
-    // delAC("skylar")
 
     const pwdChange = async (id, password) => {
         if (!id && !password) {
@@ -174,7 +152,6 @@ function App() {
             console.log(err)
         }
     }
-    // pwdChange("will", "456")
 
     return (
         <div className="App">
@@ -198,14 +175,11 @@ function App() {
                                 pwdInput={pwdInput}
                                 idInput={idInput} />}>
                     </Route>
-                    <Route path="/" exact index
-                        element={
-                            <Login handleInput={handleInput}
-                                // login={login}
-                                pwdInput={pwdInput}
-                                idInput={idInput} />} />
-                    <Route path="/summary" 
-                        element={<Summary/>} />
+
+                    <Route path="/summary" element={<Summary />} />
+
+                    <Route path='/self_review' element={<SelfReview />}/>
+                    <Route path="/" exact index element={<Login />} />
                     <Route path="*" element={<NF />} />
                 </Routes>
             </header>

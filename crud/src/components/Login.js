@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import cookies from 'react-cookies';
 
-import { login,selfReview,tdReview } from '../app/slice.js'
+import { login } from '../app/slice.js'
 // import { decrement, increment } from '../app/slice.js'
 
 
@@ -14,46 +14,7 @@ export default function Login() {
     const [pwdInput, setPwdInput] = useState('')
     const [idInput, setIdInput] = useState('')
     const {isLogin} = useSelector(state=>state.staff)
-
-    // const topDownReviewData = async () => {
-    //     // console.log('selfReviewData fired')
-    //     let res = await fetch("http://localhost:8080/review/get_td_review_summary", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ "id": `${cookies.load('userData')?.staff_id}` }),
-    //         credentials: 'include'
-    //     })
-    //     if (res.ok) {
-    //         let result = await res.json()
-    //         console.log(result)
-    //         dispatch(tdReview(result))
-    //         cookies.save('top_down_review', result, {path: '/'})
-    //     }
-    // }
-    // const selfReviewData = async () => {
-    //     // console.log('selfReviewData fired')
-    //     let res = await fetch("http://localhost:8080/review/get_self_review_summary", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ "id": `${cookies.load('userData')?.staff_id}` }),
-    //         credentials: 'include'
-    //     })
-    //     if (res.ok) {
-    //         let result = await res.json()
-    //         console.log(result)
-    //         dispatch(selfReview(result))
-
-    //         cookies.save('self_review', result, {path: '/'})
-        
-            
-    //     }
-    // }
-
-    // const getSummary = () =>{
-    //     selfReviewData()
-    //     topDownReviewData()
-
-    // }
+   
     const handleLogin = async (id, password) => {
         
         try {
@@ -88,7 +49,6 @@ export default function Login() {
         }
     }
     const idChange = (e) => {
-        // console.log(123)
         let text = e.target.value
         console.log(text)
         setIdInput(text)
