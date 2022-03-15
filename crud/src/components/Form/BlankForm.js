@@ -22,7 +22,7 @@ function BlankForm() {
         return selection
     }
     // choices()
-    let dropDown = () => {
+    let dropDown = (s, q) => {
         let choices = []
         for (let i = 1; i < 11; i++) {
             choices.push(i)
@@ -30,7 +30,7 @@ function BlankForm() {
         }
 
         return (
-            <select name="choice" id="choice" type="text" {...register("Rating", { required: true })}>
+            <select name="choice" id={`S${s}Q${q}_choice`} type="text" {...register("choice_d", { required: true })}>
                 {choices.map((choice, index) =>
                     (<option value={choice} key={index}>{choice}</option>)
                 )}
@@ -42,8 +42,12 @@ function BlankForm() {
     const disableInput = () => {
 
     }
-    const onSubmit = data => console.log(data);
-    console.log(errors);
+    const onSubmit = (data) => {
+        console.log(data)
+        
+    };
+    // console.log(errors);
+    // console.log(watch());
     const getQuestionContent = async () => {
 
         let response = await fetch("http://localhost:8080/review/questions", {
@@ -65,8 +69,28 @@ function BlankForm() {
 
     return (
         <>
-            
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <div width="100%">
+                <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", justifyCotent: "space-between", alignItems: "center" }}>
+                    <div>
+                        <label>
+                            <input type={"checkbox"} name="supervisor"/>{questions[0]?.show_header === "Y" && <b>{questions[0]?.section_header}</b>}
+                            <p>
+                            </p>
+                        </label>
+                        <label>{questions[0]?.question_text}</label>
+                        <label>{questions[0]?.question_subtext}</label>
+                    </div>
+                    <input name="section" {...register("section", {value: questions[0]?.section})} value={questions[0]?.section} type="hidden"/>
+                    <input name="question_id" {...register("question_id", {value: questions[0]?.question_id})} value={questions[0]?.question_id} type="hidden"/>
+                    <input name="form_id" {...register("form_id", {value: questions[0]?.form_id})} value={questions[0]?.form_id} type="hidden"/>
+                    {/* <input name="form_id" value={questions[0]?.form_id}/> */}
+                    {dropDown(questions[0]?.section, questions[0]?.question_id)}
+                    <textarea {...register("comment")} id={`S${questions[0]?.section.toString()}Q${questions[0]?.question_id.toString()}_cmt`} name='comment' className='comments' rows={5} cols={30}></textarea>
+                    <input type="submit" />
+                </form>
+            </div>
+
+            <form >
                 <table border="1">
                     <thead>
                         <tr>
@@ -88,24 +112,24 @@ function BlankForm() {
                         (Required if scored 7 to 10  必填，若評分為7至10)"></textarea>
                             </td>
                         </tr>
-                <input type="submit" />
-                                              
-                    {questions.map((question,index)=>(
-                        <>
-                        {question?.show_header === "Y" && 
-                        <tr key={index}><td colSpan={3}>{question?.section === 10 && <input type={'checkbox'}/>}<b>{question?.section_header}</b></td></tr>}
+                        {/* <input type="submit" /> */}
 
-                        <tr>
-                            <td>{question?.question_text}<br/>{question?.question_subtext}</td>
-                            <td>{dropDown()}</td>
-                            <td>
-                                <textarea id='comments' name='comments' className='comments' rows={5} cols={30}></textarea>
-                            </td>
-                        </tr>
-                        </>
-                    ))
-                    }
-                   
+                        {questions.map((question, index) => (
+                            <>
+                                {question?.show_header === "Y" &&
+                                    <tr key={index}><td colSpan={3}>{question?.section === 10 && <input type={'checkbox'} />}<b>{question?.section_header}</b></td></tr>}
+
+                                <tr>
+                                    <td>{question?.question_text}<br />{question?.question_subtext}</td>
+                                    <td>{dropDown()}</td>
+                                    <td>
+                                        <textarea id='comments' name='comments' className='comments' rows={5} cols={30}></textarea>
+                                    </td>
+                                </tr>
+                            </>
+                        ))
+                        }
+
 
                     </tbody>
                 </table>
