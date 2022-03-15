@@ -1,27 +1,39 @@
 import cookies from 'react-cookies';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import BlankForm from './Form/BlankForm';
+
+import RatingInstruction from './RatingInstruction'
 
 
 
-function SelfReview(){
-const {self_review,top_down_review} = useSelector(state=>state.staff)
-function formatDate() {
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+function SelfReview() {
+    const { self_review, top_down_review } = useSelector(state => state.staff)
+    function formatDate() {
+        let d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
 
-    return [year, month, day].join('-');
-}
+        return [year, month, day].join('-');
+    }
+
+    let Appraisal_Period =() =>{ 
+        return cookies.load("self_review")?.appr_from_date?.slice(0, (cookies.load("self_review").appr_from_date.indexOf('T'))) + " to " + cookies.load("self_review")?.appr_to_date?.slice(0, (cookies.load("self_review").appr_to_date.indexOf('T')))
+    } 
+    // let Appraisal_Period_1 =() =>{ 
+    //     return self_review?.appr_from_date?.slice(0, (self_review.appr_from_date.indexOf('T'))) + "-" + self_review?.appr_to_date?.slice(0, (self_review.appr_to_date.indexOf('T')))
+    // } 
+
+
     return (
         <>
-        <h1>Performance Appraisal Form 表現評估表</h1>
-        <h2>Employee Information<br />職員資料</h2>
+            <h1>Performance Appraisal Form 表現評估表</h1>
+            <h2>Employee Information<br />職員資料</h2>
 
             <table border="1px">
                 <thead>
@@ -42,15 +54,22 @@ function formatDate() {
                         <td>{cookies.load('userData')?.grade}</td>
                     </tr>
                 </thead>
-                <tr >
-                        <td colSpan="3">Appraisal Period<br/>評估期</td>
-                        <td colSpan="3">Date of Appraisal<br/>進行評估日期</td>
-                </tr>
-                <tr>
-                    <td colSpan="3">{self_review?.appr_from_date?.slice(0, (self_review.appr_from_date.indexOf('T')))} - {self_review?.appr_to_date?.slice(0, (self_review.appr_to_date.indexOf('T')))}</td>
-                    <td colSpan="3">{formatDate()}</td>
-                </tr>
+                <tbody>
+
+                    <tr >
+                        <td colSpan="3">Appraisal Period<br />評估期</td>
+                        <td colSpan="3">Date of Appraisal<br />進行評估日期</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3">{Appraisal_Period()}</td>
+                        {/* <td colSpan="3">{`${self_review?.appr_from_date?.slice(0, (self_review.appr_from_date.indexOf('T')))} - ${self_review?.appr_to_date?.slice(0, (self_review.appr_to_date.indexOf('T')))}`}</td> */}
+                        <td colSpan="3">{formatDate()}</td>
+                    </tr>
+                </tbody>
             </table>
+            <RatingInstruction/>
+            <BlankForm/>
+
         </>
     )
 }
