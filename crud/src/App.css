@@ -41,6 +41,9 @@ button, input{
   margin: 5px;
   border-radius: 10px;
   text-align: center;
+  display: block;
+
+
 }
 
 form{

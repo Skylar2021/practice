@@ -1,0 +1,19 @@
+textarea{
+    resize: none;
+    overflow-y: auto;
+    height: 80px;
+    width: 240px;
+    border-radius: 10px;
+    display: block;
+    margin: 10px auto;
+}
+
+select{
+    height: 30px;
+    width: 50px;
+    border-radius: 10px;
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+
+}
