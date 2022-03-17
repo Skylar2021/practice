@@ -68,7 +68,7 @@ function SelfReview() {
                 </tbody>
             </table>
             <RatingInstruction/>
-            <BlankForm/>
+            <BlankForm assign_type={"S"}/>
 
         </>
     )
