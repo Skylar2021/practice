@@ -6,7 +6,7 @@ import { getQuestions, toggleSupervisor } from '../../app/slice.js'
 import { useEffect } from 'react';
 
 
-function BlankForm() {
+function BlankForm({assign_type}) {
     const dispatch = useDispatch()
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
@@ -66,23 +66,56 @@ function BlankForm() {
         getQuestionContent()
 
         // console.log("useeffect")
-        console.log(questionsBank[0])
+        // console.log(questionsBank[0])
     }, [])
 
     const testing = () => {
         let allForm = Array.from(document.querySelectorAll(".answer"))
+        let data = allForm.map(obj =>
+            ({
+                t_id: genT_id(),
+                form_id: obj?.form_id?.value,
+                section: obj?.section?.value,
+                question_id: obj?.question_id?.value,
+                choice_id: obj?.choice_id?.value,
+                comments: obj?.comment?.value,
+                emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
+                store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
+                emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
+                store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
+    
+            })
+        )
 
-        // nodeValues.forEach(value=>console.log(value))
-        // console.log(nodeValues)
-        // .forEach((value)=>console.log())
-        console.log(allForm[0])
-        console.log({ section: allForm[0]?.section?.value })
-        console.log(allForm[0]?.question_id?.value)
-        console.log(allForm[0]?.form_id?.value)
-        console.log(allForm[0]?.choice_id?.value)
-        console.log(allForm[0]?.comment?.value)
-    }
+        console.log(data)
+        let objArr = {
+            t_id: genT_id(),
+            form_id: allForm[0]?.form_id?.value,
+            section: allForm[0]?.section?.value,
+            question_id: allForm[0]?.question_id?.value,
+            choice_id: allForm[0]?.choice_id?.value,
+            comments: allForm[0]?.comment?.value,
+            emp_mon_sales: allForm[0]?.emp_mon_sales ? allForm[0]?.emp_mon_sales.value : null,
+            store_mon_sales: allForm[0]?.store_mon_sales ? allForm[0]?.store_mon_sales.value : null,
+            emp_avg_sales: allForm[0]?.emp_avg_sales ? allForm[0]?.emp_avg_sales.value : null,
+            store_avg_sales: allForm[0]?.store_avg_sales ? allForm[0]?.store_avg_sales.value : null,
 
+        }
+        }
+    //     console.log(objArr)
+       
+    //     console.log(allForm[0])
+    //     console.log({ section: allForm[0]?.section?.value })
+    //     console.log(allForm[0]?.question_id?.value)
+    //     console.log(allForm[0]?.form_id?.value)
+    //     console.log(allForm[0]?.choice_id?.value)
+    //     console.log(allForm[0]?.comment?.value)
+    // }
+const genT_id = () =>{
+    let t_id = cookies.load('userData').form_type_id + cookies.load('userData').year.toString().slice(2) + cookies.load('userData').staff_id + assign_type + "01"
+    // console.log(t_id)
+    return t_id
+}
 
 
     return (
@@ -97,7 +130,7 @@ function BlankForm() {
                          <b>{question?.section_header}</b>
 
                     </div>}
-                    <div style={{ display: "flex", justifyCotent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 
                         <div style={{ textAlign: "left" }}>
 
@@ -105,7 +138,7 @@ function BlankForm() {
                             <br />
                             <label>{question?.question_subtext}</label>
                         </div>
-                        <div className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
+                        <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
                             <input name="section" value={question?.section} type="hidden" />
                             <input name="question_id" value={question?.question_id} type="hidden" />
@@ -115,14 +148,14 @@ function BlankForm() {
                             <textarea id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} name='comment' className='comments' rows={5} cols={30} placeholder="Comments 評語
                             (Required if scored 7 to 10  必填，若評分為7至10)"></textarea>
                             
-                                <table hidden={question?.sales_figure === "Y" ? false: true} style={{ border: "solid" }}>
+                                {question?.sales_figure === "Y" && <table style={{ border: "solid" }}>
                                     <tr><td style={{ width:"max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
                                     <tr><td style={{ width:"max-content" }}>Avg. Monthly Sales</td><td><input style={{ width:"80px" }} name='emp_mon_sales'/></td><td><input  style={{ width:"80px" }} name='store_mon_sales'/></td></tr>
                                     <tr><td style={{ width:"max-content" }}>Avg. Sales/Transaction</td><td><input  style={{ width:"80px" }} name='emp_avg_sales'/></td><td><input  style={{ width:"80px" }} name='store_avg_sales'/></td></tr>
                                     
-                                </table>
+                                </table>}
                             
-                        </div>
+                        </form>
                     </div>
 
                 </form>
@@ -181,7 +214,7 @@ function BlankForm() {
                                 {question?.show_header === "Y" &&
                                     <tr key={index}><td colSpan={3}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></td></tr>}
 
-                                <tr className='answer'>
+                                <tr>
                                     <td>{question?.question_text}<br />{question?.question_subtext}</td>
                                     {/* <td></td> */}
                                     <td><label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
@@ -207,7 +240,7 @@ function BlankForm() {
                                 {question?.show_header === "Y" &&
                                     <tr key={index}><td colSpan={3}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></td></tr>}
 
-                                <tr className='answer'>
+                                <tr>
                                     <td>{question?.question_text}<br />{question?.question_subtext}
                                         <textarea id='comments' name='comments' className='comments' rows={5} cols={30} placeholder="Comment"></textarea>
                                     </td>
@@ -249,7 +282,8 @@ function BlankForm() {
             </form>
             <footer style={{ display: "flex", justifyCotent: "space-between", position: "fixed", bottom: "0px" }}>
                 <button>Save</button>
-                <button>Submit</button>
+                <button onClick={() => testing()}>submit</button>
+
                 <button>Back to Top</button>
             </footer>
         </>
@@ -257,4 +291,4 @@ function BlankForm() {
     )
 }
 
-export default BlankForm
+export default BlankForm;
