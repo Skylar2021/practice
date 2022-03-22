@@ -48,8 +48,9 @@ button, input{
 
 form{
   background: #ffffff25;
-  border-radius: 10px;
-  padding: 20px;
+  /* border-radius: 10px; */
+  padding: 10px;
+  margin: 2px 10px;
 
 }
 a{
