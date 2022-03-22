@@ -20,23 +20,23 @@ function RatingInstruction() {
                         <td colSpan={2}>
                             <svg width="100" height="30">
                                 <rect width="300" height="120" style={{ fill: 'rgb(221, 61, 61)' }} />
-                                <text x="35" y="14" fill="white">1 - 3</text>
-                                <text x="35" y="26" fill="white">weak</text>
+                                <text x="35" y="14" fill="white" font-size="1em">1 - 3</text>
+                                <text x="35" y="26" fill="white" font-size="1em">weak</text>
                             </svg>
                             <svg width="100" height="60">
                                 <rect width="300" height="120" style={{ fill: 'rgb(228, 130, 51)' }} />
-                                <text x="35" y="44" fill="white">4 - 6</text>
-                                <text x="24" y="56" fill="white">standard</text>
+                                <text x="35" y="44" fill="white" font-size="1em">4 - 6</text>
+                                <text x="24" y="56" fill="white" font-size="1em">standard</text>
                             </svg>
                             <svg width="100" height="90">
                                 <rect width="300" height="120" style={{ fill: 'rgb(213, 221, 98)' }} />
-                                <text x="35" y="74" fill="white">7 - 8</text>
-                                <text x="30" y="86" fill="white">strong</text>
+                                <text x="35" y="74" fill="white" font-size="1em">7 - 8</text>
+                                <text x="30" y="86" fill="white" font-size="1em">strong</text>
                             </svg>
                             <svg width="100" height="120">
                                 <rect width="300" height="120" style={{ fill: 'rgb(96, 202, 96)' }} />
-                                <text x="35" y="104" fill="white">9 - 10</text>
-                                <text x="30" y="116" fill="white">perfect</text>
+                                <text x="35" y="104" fill="white" font-size="1em">9 - 10</text>
+                                <text x="30" y="116" fill="white" font-size="1em">perfect</text>
                             </svg>
                         </td>
                     </tr>
