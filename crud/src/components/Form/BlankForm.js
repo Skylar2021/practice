@@ -1,53 +1,47 @@
 import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 
-import { getQuestions, toggleSupervisor } from '../../app/slice.js'
-import { useEffect } from 'react';
+import { getQuestions } from '../../app/slice.js'
+import { useEffect, useState } from 'react';
 
 
-function BlankForm({assign_type}) {
+function BlankForm({ assign_type }) {
     const dispatch = useDispatch()
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    // const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [supervisor, setSupervisor] = useState(false)
+    const [ttl, setTtl] = useState(0)
+    const [avg, setAvg] = useState(0)
+    const { questionsBank } = useSelector(state => state.staff)
 
-    const { questionsBank, supervisor } = useSelector(state => state.staff)
+    const disableSectionTen = () => {
+        let section_10 = document.querySelectorAll(".section_10")
+        console.log(section_10[0].disabled)
+        setSupervisor(prev =>
 
-    let selection = () => {
-        let selection = []
-        for (let i = 1; i < 11; i++) {
-            selection.push(i)
-            // selection.push(`<option value="${i}">${i}</option>`)
-        }
-        console.log(selection)
-        return selection
+            prev === true ? false : true
+        )
+        // return supervisor === true ? setSupervisor(false) : setSupervisor(true)
     }
-    // choices()
-    let dropDown = (s, q) => {
+
+    let dropDown = () => {
         let choices = []
         for (let i = 1; i < 11; i++) {
             choices.push(i)
-            // selection.push(`<option value="${i}">${i}</option>`)
         }
 
-        return (
-            <select name="choice" id={`S${s}Q${q}_choice`} type="text" {...register("choice_id", { required: true })} style={{ display: "inline-block" }}>
-                {choices.map((choice, index) =>
-                    (<option value={choice} key={index}>{choice}</option>)
-                )}
-                {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
-            </select>
-        )
+        // return (
+        //     <select name="choice_id" id="choice_id" type="text" style={{ display: "inline-block" }}>
+        //         {choices.map((choice, index) =>
+        //             (<option value={choice} key={index}>{choice}</option>)
+        //         )}
+        //         {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
+        //     </select>
+        // )
+        return choices
     }
     // console.log(dropDown())
 
-
-    const onSubmit = (data) => {
-
-        console.log(data)
-
-    };
-    // console.log(errors);
-    // console.log(watch());
     const getQuestionContent = async () => {
 
         let response = await fetch("http://localhost:8080/review/questions", {
@@ -58,52 +52,144 @@ function BlankForm({assign_type}) {
         if (response.ok) {
             let result = await response.json()
             dispatch(getQuestions(result))
-            // console.log(result)
             // console.log("result")
+            // console.log(result)
         }
     }
     useEffect(() => {
         getQuestionContent()
-
+        dropDown()
         // console.log("useeffect")
         // console.log(questionsBank[0])
     }, [])
 
+    const calTtl = () => {
+        let score_ttl = 0
+        let choices = Array.from(document.querySelectorAll(".choice_id"))
+        choices.forEach(choice => {
+            score_ttl += parseInt(choice.value)
+        })
+        setTtl(score_ttl)
+        console.log(score_ttl)
+        // console.log(ttl)
+        return score_ttl
+    }
+    const calAvg = () => {
+        let score_avg = 0, score_ttl = 0, count = 0
+        let choices = Array.from(document.querySelectorAll(".choice_id"))
+        choices.forEach(choice => {
+            score_ttl += parseInt(choice.value)
+            count++
+        })
+        score_avg = score_ttl / count
+        setAvg(score_avg.toFixed(2))
+        console.log(score_avg.toFixed(2))
+        // console.log(avg)
+        return score_avg.toFixed(2)
+    }
+
+    const calculate = () => {
+        calTtl();
+        calAvg();
+        // console.log(ttl)
+        // console.log(avg)
+    }
+
+
     const testing = () => {
+        calculate()
+        if (checkChoiceOver7) {
+            alert("Please enter comments if any performance statement scored 7 to 10. 任何評估項目分數為7至10，必須輸入評語。")
+            return
+        };
+
         let allForm = Array.from(document.querySelectorAll(".answer"))
-        let data = allForm.map(obj =>
-            ({
-                t_id: genT_id(),
-                form_id: obj?.form_id?.value,
-                section: obj?.section?.value,
-                question_id: obj?.question_id?.value,
-                choice_id: obj?.choice_id?.value,
-                comments: obj?.comment?.value,
-                emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
-                store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
-                emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
-                store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
-    
-            })
+        let ansArr = allForm.map(obj =>
+        ({
+            t_id: genT_id(),
+            form_id: obj?.form_id?.value,
+            section: obj?.section?.value,
+            question_id: obj?.question_id?.value,
+            choice_id: obj?.choice_id?.disabled ? null : obj?.choice_id?.value,
+            comments: obj?.comment?.disabled ? null : obj?.comment?.value,
+            // choice_id: obj?.choice_id?.value,
+            // comments: obj?.comment?.value,
+            emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
+            store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
+            emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
+            store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
+
+        })
         )
 
-        console.log(data)
-        let objArr = {
+        let scoreObj = {
             t_id: genT_id(),
-            form_id: allForm[0]?.form_id?.value,
-            section: allForm[0]?.section?.value,
-            question_id: allForm[0]?.question_id?.value,
-            choice_id: allForm[0]?.choice_id?.value,
-            comments: allForm[0]?.comment?.value,
-            emp_mon_sales: allForm[0]?.emp_mon_sales ? allForm[0]?.emp_mon_sales.value : null,
-            store_mon_sales: allForm[0]?.store_mon_sales ? allForm[0]?.store_mon_sales.value : null,
-            emp_avg_sales: allForm[0]?.emp_avg_sales ? allForm[0]?.emp_avg_sales.value : null,
-            store_avg_sales: allForm[0]?.store_avg_sales ? allForm[0]?.store_avg_sales.value : null,
+            form_id: cookies.load('userData')?.form_id,
+            staff_id: cookies.load('userData')?.staff_id,
+            assign_type: assign_type,
+            reviewer_id: cookies.load('userData')?.supervisor_id,
+            status: "1",
+            appr_id: cookies.load('userData')?.supervisor_id,
+            score_ttl: calTtl(),
+            score_avg: calAvg(),
+            is_optional: "N"
+        }
+        insertScore(scoreObj)
+        ansArr.forEach(ansObj => insertAnswer(ansObj))
+
+        console.log(ansArr)
+        console.log(scoreObj)
+        // let objArr = {
+        //     t_id: genT_id(),
+        //     form_id: allForm[13]?.form_id?.value,
+        //     section: allForm[13]?.section?.value,
+        //     question_id: allForm[13]?.question_id?.value,
+        //     choice_id: allForm[13]?.choice_id?.value,
+        //     choice_id: allForm[13]?.choice_id?.disabled ? null : allForm[13]?.choice_id?.value,
+        //     comments: allForm[13]?.comment?.disabled ? null : allForm[13]?.comment?.value,
+        //     // comments: allForm[13]?.comment?.value,
+        //     emp_mon_sales: allForm[13]?.emp_mon_sales ? allForm[13]?.emp_mon_sales.value : null,
+        //     store_mon_sales: allForm[13]?.store_mon_sales ? allForm[13]?.store_mon_sales.value : null,
+        //     emp_avg_sales: allForm[13]?.emp_avg_sales ? allForm[13]?.emp_avg_sales.value : null,
+        //     store_avg_sales: allForm[13]?.store_avg_sales ? allForm[13]?.store_avg_sales.value : null,
+
+        // }
+
+        // console.log(objArr)
+        // console.log(allForm[13])
+        // console.log(allForm[13].comment.disabled)
+        // console.log(allForm[10].comment.disabled)
+    }
+
+    const insertAnswer = async (obj) => {
+
+        let response = await fetch("http://localhost:8080/review/ans_insert", {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(obj)
+        })
+        if (response.ok) {
+            let result = await response.json()
+            console.log(result)
 
         }
+
+    }
+    const insertScore = async (obj) => {
+
+        let response = await fetch("http://localhost:8080/review/score_insert", {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(obj)
+        })
+        if (response.ok) {
+            let result = await response.json()
+            console.log(result)
+
         }
-    //     console.log(objArr)
-       
+
+    }
+
     //     console.log(allForm[0])
     //     console.log({ section: allForm[0]?.section?.value })
     //     console.log(allForm[0]?.question_id?.value)
@@ -111,57 +197,111 @@ function BlankForm({assign_type}) {
     //     console.log(allForm[0]?.choice_id?.value)
     //     console.log(allForm[0]?.comment?.value)
     // }
-const genT_id = () =>{
-    let t_id = cookies.load('userData').form_type_id + cookies.load('userData').year.toString().slice(2) + cookies.load('userData').staff_id + assign_type + "01"
-    // console.log(t_id)
-    return t_id
-}
+
+    const checkChoiceOver7 = () => {
+        let count = 0
+        let choices = Array.from(document.querySelectorAll(".choice_id"))
+        choices.forEach(choice => {
+            if (parseInt(choice.value) >= 7) {
+                count++
+            }
+
+        })
+        return count > 0 ? true : false
+    }
+
+    const genT_id = () => {
+        let t_id = cookies.load('userData').form_type_id + cookies.load('userData').year.toString().slice(2) + cookies.load('userData').staff_id + assign_type + "01"
+        // console.log(t_id)
+        return t_id
+    }
+
 
 
     return (
         <>
             <div width="100%">
-            {questionsBank.filter(question => question.section != 20).map((question, index) => (
-                <form style={{ border: "solid" }}>
-                    {question?.show_header === "Y" &&
-                    <div style={{ display: "flex", justifyCotent: "space-between", alignItems: "left", borderBottom: "solid" }}>
-                        { question?.is_optional === "Y" && <input type="checkbox" onClick={({ target }) => console.log(target.checked)} name="supervisor" style={{ display: "inline-block", width: "max-content" }} />}
-                        {/* { question?.section?.toString() === "3" && <input type="checkbox" onClick={({ target }) => console.log(target.checked)} name="supervisor" style={{ display: "inline-block", position:"relative", left:"-10px" }} />} */}
-                         <b>{question?.section_header}</b>
+                <label>Total: {ttl}</label><br />
+                <label>Average: {avg}</label>
+                {questionsBank.filter(question => question.section != 20).map((question, index) => (
+                    <form style={{ borderTop: "solid" }}>
+                        {question?.show_header === "Y" &&
+                            <div style={{ display: "flex", justifyCotent: "space-between", alignItems: "left", borderBottom: "solid" }}>
+                                {question?.is_optional === "Y" && <input type="checkbox" onClick={() => disableSectionTen()} name="supervisor" style={{ display: "inline-block", width: "max-content" }} />}
+                                {/* { question?.section?.toString() === "3" && <input type="checkbox" onClick={({ target }) => console.log(target.checked)} name="supervisor" style={{ display: "inline-block", position:"relative", left:"-10px" }} />} */}
+                                <b>{question?.section_header}</b>
 
-                    </div>}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            </div>}
 
-                        <div style={{ textAlign: "left" }}>
 
-                            <label>{question?.question_text}</label>
-                            <br />
-                            <label>{question?.question_subtext}</label>
+                        <div className='qna-container' style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+                            <div style={{ textAlign: "left" }}>
+
+                                <label>{question?.question_text}</label>
+                                <br />
+                                <label>{question?.question_subtext}</label>
+                            </div>
+                            {question?.section == "10" ?
+                                <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
+
+                                    <input name="section" value={question?.section} type="hidden" />
+                                    <input name="question_id" value={question?.question_id} type="hidden" />
+                                    <input name="form_id" value={question?.form_id} type="hidden" />
+                                    <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
+                                    {/* {dropDown(question?.section, question?.question_id)} */}
+                                    <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }} disabled={!supervisor}>
+                                        {dropDown().map((choice, index) =>
+                                            (<option value={choice} key={index}>{choice}</option>)
+                                        )}
+                                        {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
+                                    </select>
+
+                                    <textarea name='comment' className={`comments section_${question?.section}`} align="right" type="text" id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comments 評語
+                            (Required if scored 7 to 10  必填，若評分為7至10)"  disabled={!supervisor}></textarea>
+
+                                    {question?.sales_figure === "Y" && <table style={{ border: "solid" }}>
+                                        <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' /></td><td><input style={{ width: "80px" }} name='store_mon_sales' /></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' /></td><td><input style={{ width: "80px" }} name='store_avg_sales' /></td></tr>
+
+                                    </table>}
+
+                                </form>
+                                :
+                                <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
+
+                                    <input name="section" value={question?.section} type="hidden" />
+                                    <input name="question_id" value={question?.question_id} type="hidden" />
+                                    <input name="form_id" value={question?.form_id} type="hidden" />
+                                    <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
+                                    {/* {dropDown(question?.section, question?.question_id)} */}
+                                    <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
+                                        {dropDown().map((choice, index) =>
+                                            (<option value={choice} key={index}>{choice}</option>)
+                                        )}
+                                        {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
+                                    </select>
+
+                                    <textarea name='comment' className={`comments section_${question?.section}`} align="right" type="text" id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comments 評語
+                            (Required if scored 7 to 10  必填，若評分為7至10)" ></textarea>
+
+                                    {question?.sales_figure === "Y" && <table style={{ border: "solid" }}>
+                                        <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' /></td><td><input style={{ width: "80px" }} name='store_mon_sales' /></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' /></td><td><input style={{ width: "80px" }} name='store_avg_sales' /></td></tr>
+
+                                    </table>}
+
+                                </form>
+                            }
                         </div>
-                        <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
-                            <input name="section" value={question?.section} type="hidden" />
-                            <input name="question_id" value={question?.question_id} type="hidden" />
-                            <input name="form_id" value={question?.form_id} type="hidden" />
-                            <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>{dropDown(question?.section, question?.question_id)}
-
-                            <textarea id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} name='comment' className='comments' rows={5} cols={30} placeholder="Comments 評語
-                            (Required if scored 7 to 10  必填，若評分為7至10)"></textarea>
-                            
-                                {question?.sales_figure === "Y" && <table style={{ border: "solid" }}>
-                                    <tr><td style={{ width:"max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
-                                    <tr><td style={{ width:"max-content" }}>Avg. Monthly Sales</td><td><input style={{ width:"80px" }} name='emp_mon_sales'/></td><td><input  style={{ width:"80px" }} name='store_mon_sales'/></td></tr>
-                                    <tr><td style={{ width:"max-content" }}>Avg. Sales/Transaction</td><td><input  style={{ width:"80px" }} name='emp_avg_sales'/></td><td><input  style={{ width:"80px" }} name='store_avg_sales'/></td></tr>
-                                    
-                                </table>}
-                            
-                        </form>
-                    </div>
-
-                </form>
-            ))}
+                    </form>
+                ))}
             </div>
-            <div width="100%">
+
+            {/* <div width="100%">
                 <form name="form1" className='form' onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", justifyCotent: "space-between", alignItems: "center" }}>
                     <div>
                         <label>
@@ -175,116 +315,54 @@ const genT_id = () =>{
                     <input name="section" value={questionsBank[0]?.section} type="hidden" />
                     <input name="question_id" value={questionsBank[0]?.question_id} type="hidden" />
                     <input name="form_id" value={questionsBank[0]?.form_id} type="hidden" />
-                    {/* <input name="form_id" value={questionsBank[0]?.form_id}/> */}
+                    <input name="form_id" value={questionsBank[0]?.form_id}/>
                     {dropDown(questionsBank[0]?.section, questionsBank[0]?.question_id)}
                     <textarea id={`S${questionsBank[0]?.section.toString()}Q${questionsBank[0]?.question_id.toString()}_cmt`} name='comment' className='comments' rows={5} cols={30} placeholder="Comments 評語
                         (Required if scored 7 to 10  必填，若評分為7至10)"></textarea>
-                    {/* <input type="submit" /> */}
+                    <input type="submit" />
                 </form>
             </div>
-            <button onClick={() => testing()}>submit</button>
-
-            <form className='form'>
-                <table border="1">
-                    {/* <thead>
-                        <tr>
-                            <th width="60%"></th>
-                            <th width="10%">Rating 評分</th>
-                            <th width="30%">Comments 評語<br />(Required if scored 7 to 10  必填，若評分為7至10)</th>
-                        </tr>
-                    </thead> */}
-                    <tbody>
-
-                        {/* {questionsBank[0]?.show_header === "Y" &&
-                            <tr><td colSpan={3}><b>{questionsBank[0]?.section_header}</b></td></tr>}
-
-                        <tr>
-                            <td>{questionsBank[0]?.question_text}</td>
-                            <td>{dropDown()}</td>
-                            <td>
-                                <textarea id='comments' name='comments' className='comments' rows={5} cols={30} placeholder="Comments 評語
-                        (Required if scored 7 to 10  必填，若評分為7至10)"></textarea>
-                            </td>
-                        </tr> */}
-                        {/* <input type="submit" /> */}
-
-                        {questionsBank.filter(question => question.section != 20).map((question, index) => (
-                            <>
-
-                                {question?.show_header === "Y" &&
-                                    <tr key={index}><td colSpan={3}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></td></tr>}
-
-                                <tr>
-                                    <td>{question?.question_text}<br />{question?.question_subtext}</td>
-                                    {/* <td></td> */}
-                                    <td><label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
-                                        {dropDown()}
-                                        <textarea id='comments' name='comments' className='comments' rows={5} cols={30}></textarea>
-                                    </td>
-                                </tr>
-                            </>
-                        ))
-                        }
+            <button onClick={() => testing()}>submit</button> */}
 
 
+            <form style={{ borderTop: "solid" }}>
 
-                    </tbody>
-                </table>
-                <br />
-                <table border="1" >
-                    <tbody>
 
-                        {questionsBank.filter(question => question.section == 20).map((question, index) => (
-                            <>
+                {questionsBank.filter(question => question.section == 20).map((question, index) => (
+                    <form className='answer'>
 
-                                {question?.show_header === "Y" &&
-                                    <tr key={index}><td colSpan={3}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></td></tr>}
+                        {question?.show_header === "Y" &&
+                            <label key={index}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></label>}
+                        <input name="section" value={question?.section} type="hidden" />
+                        <input name="question_id" value={question?.question_id} type="hidden" />
+                        <input name="form_id" value={question?.form_id} type="hidden" />
 
-                                <tr>
-                                    <td>{question?.question_text}<br />{question?.question_subtext}
-                                        <textarea id='comments' name='comments' className='comments' rows={5} cols={30} placeholder="Comment"></textarea>
-                                    </td>
-                                    {/* <td></td> */}
-                                    <td>
-                                        {/* <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label> */}
-                                        {/* {dropDown()} */}
-                                    </td>
-                                </tr>
-                            </>
-                        ))
-                        }
-                    </tbody>
-                </table>
-                {/* <form onSubmit={handleSubmit(onSubmit)}>
-                {questionsBank[0]?.show_header === "Y" &&
-                            <label>{questionsBank[0]?.section_header}</label>}
-                <label>{questionsBank[0]?.question_text}</label>
-                <label>{questionsBank[0]?.question_subtext}</label>
-                <select name="choice" {...register("Rating", { required: true })}>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                <textarea {...register("Comment", {})} placeholder="Comments 評語
-                        (Required if scored 7 to 10  必填，若評分為7至10)"/>
-                <input type="checkbox" placeholder="supervisor" {...register("supervisor", { maxLength: 12 })} />
+                        {question?.question_text}<br />{question?.question_subtext}
+                        <textarea name='comment' className='comments' id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
 
-                <input type="submit" />
-            </form> */}
+                        <input name="choice_id" className={`choice section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled>
+                            {/* {dropDown().map((choice, index) =>
+                                            (<option value={choice} key={index}>{choice}</option>)
+                                        )} */}
+                            {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
+                        </input>
+
+                    </form>
+                ))
+                }
 
             </form>
-            <footer style={{ display: "flex", justifyCotent: "space-between", position: "fixed", bottom: "0px" }}>
+
+
+
+            <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
                 <button>Save</button>
                 <button onClick={() => testing()}>submit</button>
 
+                <button onClick={() => calculate()}>Calculate</button>
                 <button>Back to Top</button>
+                <button>Average: {avg} Total: {ttl}</button>
+                {/* <button></button> */}
             </footer>
         </>
 
