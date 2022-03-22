@@ -378,9 +378,9 @@ export default class Controller {
             try {
                 let result = await Review.ansInsert(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({ message: "updated" })
+                    res.status(200).json({ message: "inserted" })
                 } else {
-                    res.status(400).json({ message: "fail to update" })
+                    res.status(400).json({ message: "fail to insert" })
 
                 }
             } catch (err) {
