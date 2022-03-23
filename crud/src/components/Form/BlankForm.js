@@ -1,6 +1,6 @@
 import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // import { useForm } from "react-hook-form";
 
@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 
 function BlankForm({ assign_type }) {
     const dispatch = useDispatch()
+    const navigate = useNavigate();
+
     // const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const [supervisor, setSupervisor] = useState(false)
     const [ttl, setTtl] = useState(0)
@@ -20,7 +22,6 @@ function BlankForm({ assign_type }) {
         let section_10 = document.querySelectorAll(".section_10")
         console.log(section_10[0].disabled)
         setSupervisor(prev =>
-
             prev === true ? false : true
         )
         // return supervisor === true ? setSupervisor(false) : setSupervisor(true)
@@ -162,6 +163,7 @@ function BlankForm({ assign_type }) {
         // console.log(allForm[13])
         // console.log(allForm[13].comment.disabled)
         // console.log(allForm[10].comment.disabled)
+        navigate('/summary')
     }
 
     const insertAnswer = async (obj) => {
@@ -206,7 +208,7 @@ function BlankForm({ assign_type }) {
         let warnArr = []
         let answers = Array.from(document.querySelectorAll(".answer"))
         answers.forEach(answer => {
-            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value == "" ) {
+            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value == "") {
                 count++
                 warnArr.push(answer.comment.id)
                 console.log(answer.choice_id)
@@ -214,7 +216,7 @@ function BlankForm({ assign_type }) {
             }
         })
 
-        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border="solid 3px red" ) 
+        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border = "solid 3px red")
 
         return count > 0 ? true : false
     }
@@ -229,7 +231,7 @@ function BlankForm({ assign_type }) {
 
     return (
         <>
-            <div width="100%">
+            <div width="100%" id="form-container">
                 <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label>
                 {questionsBank.filter(question => question.section != 20).map((question, index) => (
@@ -369,7 +371,7 @@ function BlankForm({ assign_type }) {
                 <button onClick={() => handleSubmit()}>submit</button>
 
                 <button onClick={() => calculate()}>Calculate</button>
-                <button>Back to Top</button>
+                <button><a href='#form-container'>Back to Top</a></button>
                 <button>Average: {avg} Total: {ttl}</button>
                 {/* <button></button> */}
             </footer>
