@@ -1,5 +1,7 @@
 import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link,useNavigate } from 'react-router-dom';
+
 // import { useForm } from "react-hook-form";
 
 import { getQuestions } from '../../app/slice.js'
@@ -96,10 +98,11 @@ function BlankForm({ assign_type }) {
     }
 
 
-    const testing = () => {
-        calculate()
-        if (checkChoiceOver7) {
-            alert("Please enter comments if any performance statement scored 7 to 10. 任何評估項目分數為7至10，必須輸入評語。")
+    const handleSubmit = () => {
+        calculate();
+
+        if (checkChoiceOver7()) {
+            alert("Please enter comments if any performance statement scored 7 to 10. \n任何評估項目分數為7至10，必須輸入評語。")
             return
         };
 
@@ -200,13 +203,19 @@ function BlankForm({ assign_type }) {
 
     const checkChoiceOver7 = () => {
         let count = 0
-        let choices = Array.from(document.querySelectorAll(".choice_id"))
-        choices.forEach(choice => {
-            if (parseInt(choice.value) >= 7) {
+        let warnArr = []
+        let answers = Array.from(document.querySelectorAll(".answer"))
+        answers.forEach(answer => {
+            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value == "" ) {
                 count++
+                warnArr.push(answer.comment.id)
+                console.log(answer.choice_id)
+                console.log(answer.comment.id)
             }
-
         })
+
+        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border="solid 3px red" ) 
+
         return count > 0 ? true : false
     }
 
@@ -322,7 +331,7 @@ function BlankForm({ assign_type }) {
                     <input type="submit" />
                 </form>
             </div>
-            <button onClick={() => testing()}>submit</button> */}
+            <button onClick={() => handleSubmit()}>submit</button> */}
 
 
             <form style={{ borderTop: "solid" }}>
@@ -357,7 +366,7 @@ function BlankForm({ assign_type }) {
 
             <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
                 <button>Save</button>
-                <button onClick={() => testing()}>submit</button>
+                <button onClick={() => handleSubmit()}>submit</button>
 
                 <button onClick={() => calculate()}>Calculate</button>
                 <button>Back to Top</button>
