@@ -361,9 +361,9 @@ export default class Controller {
             try {
                 let result = await Review.ansUpdate(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({ message: "updated" })
+                    res.status(200).json({ message: "Answer updated" })
                 } else {
-                    res.status(400).json({ message: "fail to update" })
+                    res.status(400).json({ message: "fail to update answer" })
 
                 }
             } catch (err) {
@@ -378,9 +378,9 @@ export default class Controller {
             try {
                 let result = await Review.ansInsert(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({ message: "inserted" })
+                    res.status(200).json({ message: "Answer inserted" })
                 } else {
-                    res.status(400).json({ message: "fail to insert" })
+                    res.status(400).json({ message: "fail to insert answer" })
 
                 }
             } catch (err) {
@@ -395,9 +395,9 @@ export default class Controller {
             try {
                 let result = await Review.scoreUpdate(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({ message: "updated" })
+                    res.status(200).json({ message: "Score updated" })
                 } else {
-                    res.status(400).json({ message: "fail to update" })
+                    res.status(400).json({ message: "fail to update score" })
 
                 }
             } catch (err) {
@@ -412,9 +412,9 @@ export default class Controller {
             try {
                 let result = await Review.scoreInsert(req.body)
                 if (result.rowsAffected) {
-                    res.status(200).json({ message: "inserted" })
+                    res.status(200).json({ message: "Score inserted" })
                 } else {
-                    res.status(400).json({ message: "fail to insert" })
+                    res.status(400).json({ message: "fail to insert score" })
 
                 }
             } catch (err) {
