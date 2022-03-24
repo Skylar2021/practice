@@ -1,6 +1,7 @@
 import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
 import BlankForm from './Form/BlankForm';
+import DraftForm from './Form/DraftForm';
 
 import RatingInstruction from './RatingInstruction'
 import StaffInfo from './StaffInfo'
@@ -70,7 +71,8 @@ function SelfReview() {
                 </tbody>
             </table> */}
             <RatingInstruction/>
-            <BlankForm assign_type={"S"}/>
+            {/* <BlankForm assign_type={"S"}/> */}
+            <DraftForm assign_type={"S"}/>
 
         </>
     )
