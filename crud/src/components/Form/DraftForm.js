@@ -268,6 +268,7 @@ function DraftForm({ assign_type }) {
                 <button>Average: {calAvg()} Total: {calTtl()}</button>
             </footer>
             
+            
         </>
     )
 }
