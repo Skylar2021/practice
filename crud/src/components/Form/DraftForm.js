@@ -12,8 +12,8 @@ function DraftForm({ assign_type }) {
     const { answers } = useSelector(state => state.staff)
     const [supervisor, setSupervisor] = useState(false)
 
-    const [ans, setAns] = useState(answers)
-
+    const [ttl, setTtl] = useState(0)
+    const [avg, setAvg] = useState(0)
     const disableSectionTen = () => {
         let section_10 = document.querySelectorAll(".section_10")
         console.log(section_10[0].disabled)
@@ -52,13 +52,78 @@ function DraftForm({ assign_type }) {
             // console.log(result)
         }
     }
+
+    const calTtl = () => {
+        let score_ttl = 0
+        // let choices = Array.from(document.querySelectorAll(".choice_id"))
+        answers.forEach(answer => {
+            if(typeof answer.choice_id === "number"){
+            score_ttl += parseInt(answer.choice_id)
+            }
+        })
+        // setTtl(score_ttl)
+        // console.log(score_ttl)
+        console.log(ttl)
+        return score_ttl
+    }
+    const calAvg = () => {
+        let  score_ttl = 0, count = 0
+        // let choices = Array.from(document.querySelectorAll(".choice_id"))
+        answers.forEach(answer => {
+            if(typeof answer.choice_id === "number"){
+                // console.log(score_ttl)
+                
+                score_ttl += parseInt(answer.choice_id)
+                count++
+                console.log(score_ttl, count)
+            }
+
+        })
+        let score_avg = score_ttl / count
+        // setAvg(score_avg.toFixed(2))
+        console.log(score_avg.toFixed(2))
+        console.log(avg)
+        return score_avg.toFixed(2)
+    }
+
+    const calculate = () => {
+        calTtl();
+        calAvg();
+    }
+    // console.log(ttl)
+    // console.log(avg)
+    const checkChoiceOver7 = () => {
+        let count = 0
+        let warnArr = []
+        let answers = Array.from(document.querySelectorAll(".answer"))
+        answers.forEach(answer => {
+            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value === "") {
+                count++
+                warnArr.push(answer.comment.id)
+                console.log(answer.choice_id)
+                console.log(answer.comment.id)
+            }
+        })
+
+        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border = "solid 3px red")
+
+        return count > 0 ? true : false
+    }
+
+    const handleSubmit = () => {
+        calculate();
+
+    }
+
     useEffect(() => {
         getQNA()
         dropDown()
-        // console.log("useeffect")
-        // console.log(questionsBank[0])
+        console.log("useEffect")
+        calTtl();
+        calAvg();
+        
     }, [])
-    console.log(answers)
+   
 
     return (
         <>
@@ -160,8 +225,8 @@ function DraftForm({ assign_type }) {
 
                                     {answer?.sales_figure === "Y" && <table style={{ border: "solid" }}>
                                         <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
-                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' /></td><td><input style={{ width: "80px" }} name='store_mon_sales' /></td></tr>
-                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' /></td><td><input style={{ width: "80px" }} name='store_avg_sales' /></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' defaultValue={answer?.emp_mon_sales}/></td><td><input style={{ width: "80px" }} name='store_mon_sales' defaultValue={answer?.store_mon_sales}/></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' defaultValue={answer?.emp_avg_sales}/></td><td><input style={{ width: "80px" }} name='store_avg_sales'  defaultValue={answer?.store_avg_sales}/></td></tr>
 
                                     </table>}
 
@@ -172,6 +237,36 @@ function DraftForm({ assign_type }) {
                     </form>
                 ))}
             </div>
+            <form style={{ borderTop: "solid" }}>
+
+
+                {answers.filter(question => question.section == 20).map((question, index) => (
+                    <form className='answer'>
+
+                        {question?.show_header === "Y" &&
+                            <label key={index}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></label>}
+                        <input name="section" value={question?.section} type="hidden" />
+                        <input name="question_id" value={question?.question_id} type="hidden" />
+                        <input name="form_id" value={question?.form_id} type="hidden" />
+
+                        {question?.question_text}<br />{question?.question_subtext}
+                        <textarea name='comment' className='comments' id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
+
+                        <input name="choice_id" className={`choice section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled/>
+                       
+                    </form>
+                ))
+                }
+
+            </form>
+
+            <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
+                <button>Save</button>
+                <button onClick={() => handleSubmit()}>submit</button>
+                <button onClick={() => calculate()}>Calculate</button>
+                <button><a href='#form-container'>Back to Top</a></button>
+                <button>Average: {calAvg()} Total: {calTtl()}</button>
+            </footer>
             
         </>
     )
