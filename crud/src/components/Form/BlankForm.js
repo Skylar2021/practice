@@ -208,7 +208,7 @@ function BlankForm({ assign_type }) {
         let warnArr = []
         let answers = Array.from(document.querySelectorAll(".answer"))
         answers.forEach(answer => {
-            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value == "") {
+            if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value === "") {
                 count++
                 warnArr.push(answer.comment.id)
                 console.log(answer.choice_id)
@@ -234,7 +234,7 @@ function BlankForm({ assign_type }) {
             <div width="100%" id="form-container">
                 <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label>
-                {questionsBank.filter(question => question.section != 20).map((question, index) => (
+                {questionsBank.filter(question => question.section !== 20).map((question, index) => (
                     <form style={{ borderTop: "solid" }}>
                         {question?.show_header === "Y" &&
                             <div style={{ display: "flex", justifyCotent: "space-between", alignItems: "left", borderBottom: "solid" }}>
