@@ -32,8 +32,8 @@ export default class Controller {
         }
     }
     */
-    getStaffInfo = async (req,res) =>{
-        if (!req.body.id ) {
+    getStaffInfo = async (req, res) => {
+        if (!req.body.id) {
             res.status(400)
             res.json({ message: "Staff ID empty" })
             return
@@ -47,43 +47,43 @@ export default class Controller {
                 res.status(400).json({ message: "Staff ID not found" })
                 return
             } else {
-            /*
-            else if (userFound.password.toString() === req.body.password) {
-                // let user = { "staff_id": userFound.staff_id, "username": userFound.name }
-                req.session.userData = {}
-                req.session.userData["staff_id"] = userFound.staff_id
-                req.session.userData["name"] = userFound.name
-                req.session.userData["chinese_name"] = userFound.chinese_name
-                req.session.userData["grade_id"] = userFound.grade_id
-                req.session.userData["position_id"] = userFound.position_id
-                req.session.userData["position_desc"] = userFound.position_desc
-                req.session.userData["dept_id"] = userFound.dept_id
-                req.session.userData["dept_name"] = userFound.dept_name
-                req.session.userData["dept_head_id"] = userFound.dept_head_id
-                req.session.userData["div_head_id"] = userFound.div_head_id
-                req.session.userData["final_score_id"] = userFound.final_score_id
-                req.session.userData["supervisor_id"] = userFound.supervisor_id
-                req.session.userData["date_joined"] = userFound.date_joined
-                req.session.userData["email"] = userFound.email
-                req.session.userData["reviewer_id"] = userFound.reviewer_id
-                req.session.userData["form_type_id"] = userFound.form_type_id
-                req.session.userData["form_id"] = userFound.form_id
-                req.session.userData["year"] = new Date().getFullYear()
-                console.log(req.session.userData)
-                // req.session.userData[""] = userFound.
-                let user = {
-                    staff_id: userFound.staff_id,
-                    name: userFound.name,
-                    chinese_name: userFound.chinese_name,
-                    dept: userFound.dept_name,
-                    position: userFound.position_desc,
-                    date_joined: userFound.date_joined,
-                    email: userFound.email
-                }
-                */
-                res.status(200).json({  user: userFound })
+                /*
+                else if (userFound.password.toString() === req.body.password) {
+                    // let user = { "staff_id": userFound.staff_id, "username": userFound.name }
+                    req.session.userData = {}
+                    req.session.userData["staff_id"] = userFound.staff_id
+                    req.session.userData["name"] = userFound.name
+                    req.session.userData["chinese_name"] = userFound.chinese_name
+                    req.session.userData["grade_id"] = userFound.grade_id
+                    req.session.userData["position_id"] = userFound.position_id
+                    req.session.userData["position_desc"] = userFound.position_desc
+                    req.session.userData["dept_id"] = userFound.dept_id
+                    req.session.userData["dept_name"] = userFound.dept_name
+                    req.session.userData["dept_head_id"] = userFound.dept_head_id
+                    req.session.userData["div_head_id"] = userFound.div_head_id
+                    req.session.userData["final_score_id"] = userFound.final_score_id
+                    req.session.userData["supervisor_id"] = userFound.supervisor_id
+                    req.session.userData["date_joined"] = userFound.date_joined
+                    req.session.userData["email"] = userFound.email
+                    req.session.userData["reviewer_id"] = userFound.reviewer_id
+                    req.session.userData["form_type_id"] = userFound.form_type_id
+                    req.session.userData["form_id"] = userFound.form_id
+                    req.session.userData["year"] = new Date().getFullYear()
+                    console.log(req.session.userData)
+                    // req.session.userData[""] = userFound.
+                    let user = {
+                        staff_id: userFound.staff_id,
+                        name: userFound.name,
+                        chinese_name: userFound.chinese_name,
+                        dept: userFound.dept_name,
+                        position: userFound.position_desc,
+                        date_joined: userFound.date_joined,
+                        email: userFound.email
+                    }
+                    */
+                res.status(200).json({ user: userFound })
 
-            } 
+            }
 
         } catch (err) {
             res.status(400).json({ message: "try again! " })
@@ -143,13 +143,13 @@ export default class Controller {
                     chinese_name: userFound.chinese_name,
                     dept: userFound.dept_name,
                     position: userFound.position_desc,
-                    grade:userFound.grade_id,
+                    grade: userFound.grade_id,
                     supervisor_id: userFound.supervisor_id,
                     date_joined: userFound.date_joined,
                     email: userFound.email,
-                    form_type_id : userFound.form_type_id,
-                    form_id : userFound.form_id,
-                    year : new Date().getFullYear()
+                    form_type_id: userFound.form_type_id,
+                    form_id: userFound.form_id,
+                    year: new Date().getFullYear()
                 }
                 res.status(200).json({ login: true, userData: user })
 
@@ -233,7 +233,7 @@ export default class Controller {
     }
 
     get_self_review_summary = async (req, res) => {
-        
+
 
         console.log("req.session")
         console.log(req.session)
@@ -241,9 +241,9 @@ export default class Controller {
         let staffId = req.session.userData == true ? req.session.userData["staff_id"] : req.body.id
         console.log(staffId)
 
-        
+
         if (staffId) {
-            
+
             console.log("staff_id:", staffId)
             try {
                 let result = await Review.getSummary_self(staffId, assign_type)
@@ -264,16 +264,16 @@ export default class Controller {
         } else {
             res.status(400).json({ message: "staff id empty" })
         }
-        
+
     }
-    
+
     get_td_review_summary = async (req, res) => {
-        
+
         console.log("userData")
         console.log(req.session.userData)
         let staffId = req.session.userData == true ? req.session.userData["staff_id"] : req.body.id
         if (staffId) {
-           
+
             try {
                 let result = await Review.getSummary_td(staffId, 'T')
                 console.log(result)
@@ -281,7 +281,7 @@ export default class Controller {
             } catch (err) {
                 console.log(err)
                 res.status(400).json({ message: "Please try again!" })
-                
+
             }
         } else {
             res.status(400).json({ message: "staff id empty" })
@@ -316,11 +316,25 @@ export default class Controller {
     }
 
     getQNA = async (req, res) => {
-        if (req.session.userData["staff_id"] && req.session.userData["year"] && req.session.review["t_id"] && req.session.userData["form_id"]) {
+        if (req.session?.userData?.staff_id && req.session?.userData?.year && req.session?.review?.t_id && req.session?.userData?.form_id) {
             let staffId = req.session.userData["staff_id"],
                 year = req.session.userData["year"],
                 t_id = req.session.review["t_id"],
                 formId = req.session.userData["form_id"]
+            try {
+                let result = await Review.getQNA(staffId, formId, t_id, year)
+                if (result) {
+                    res.status(200).json(result)
+                }
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!" })
+            }
+        } else if (req.body) {
+            let staffId = req.body.staff_id,
+                year = req.body.year,
+                t_id = req.body.t_id,
+                formId = req.body.form_id
             try {
                 let result = await Review.getQNA(staffId, formId, t_id, year)
                 if (result) {
@@ -335,8 +349,8 @@ export default class Controller {
 
         }
     }
-// index = 0 >>> self
-// index = 1 >>> top down
+    // index = 0 >>> self
+    // index = 1 >>> top down
     getScores = async (req, res) => {
         if (req.session.userData["staff_id"]) {
             try {
@@ -468,9 +482,9 @@ export default class Controller {
         }
     }
 
-    getScoreSummary = async (req, res) =>{
+    getScoreSummary = async (req, res) => {
         let staffId = req.body.staff_id
-        if(staffId){
+        if (staffId) {
             try {
                 let result = await Review.getScoreSummaryById(staffId)
                 if (result) {
@@ -484,13 +498,13 @@ export default class Controller {
                 console.log(err)
                 res.status(400).json({ message: "Please try again!", error: err.message })
             }
-        } else{
+        } else {
             res.status(400).json({ message: "staff id empty" })
         }
     }
-    getResult = async (req, res) =>{
+    getResult = async (req, res) => {
         let staffId = req.body.staff_id
-        if(staffId){
+        if (staffId) {
             try {
                 let result = await Review.getResultById(staffId)
                 if (result) {
@@ -504,7 +518,7 @@ export default class Controller {
                 console.log(err)
                 res.status(400).json({ message: "Please try again!", error: err.message })
             }
-        } else{
+        } else {
             res.status(400).json({ message: "staff id empty" })
         }
     }
@@ -520,7 +534,7 @@ export default class Controller {
 
                 }
             } catch (err) {
-                res.status(400).json({ message: "Please try again!",error:err.message })
+                res.status(400).json({ message: "Please try again!", error: err.message })
 
             }
         }
@@ -537,7 +551,7 @@ export default class Controller {
 
                 }
             } catch (err) {
-                res.status(400).json({ message: "Please try again!",error:err.message })
+                res.status(400).json({ message: "Please try again!", error: err.message })
 
             }
         }
