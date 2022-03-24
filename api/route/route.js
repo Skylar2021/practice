@@ -18,7 +18,7 @@ export function route() {
     router.post('/review/get_self_review_summary',control.get_self_review_summary)
     router.post('/review/get_td_review_summary',control.get_td_review_summary)
     router.post('/review/questions',control.getQuestions)
-    router.get('/review/qna_get',control.getQNA)
+    router.post('/review/qna_get',control.getQNA)
     // router.get('/review/ans+score_insert',)
     router.put('/review/ans_update',control.updateAnswer)
     router.post('/review/ans_insert',control.insertAnswer)
