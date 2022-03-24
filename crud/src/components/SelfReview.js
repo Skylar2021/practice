@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import BlankForm from './Form/BlankForm';
 
 import RatingInstruction from './RatingInstruction'
+import StaffInfo from './StaffInfo'
 
 
 
@@ -33,8 +34,10 @@ function SelfReview() {
     return (
         <>
             <h1>Performance Appraisal Form 表現評估表</h1>
+        <StaffInfo />
+            {/*
             <h2>Employee Information<br />職員資料</h2>
-
+            
             <table border="1px">
                 <thead>
                     <tr>
@@ -62,11 +65,10 @@ function SelfReview() {
                     </tr>
                     <tr>
                         <td colSpan="3">{Appraisal_Period()}</td>
-                        {/* <td colSpan="3">{`${self_review?.appr_from_date?.slice(0, (self_review.appr_from_date.indexOf('T')))} - ${self_review?.appr_to_date?.slice(0, (self_review.appr_to_date.indexOf('T')))}`}</td> */}
                         <td colSpan="3">{formatDate()}</td>
                     </tr>
                 </tbody>
-            </table>
+            </table> */}
             <RatingInstruction/>
             <BlankForm assign_type={"S"}/>
 
