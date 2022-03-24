@@ -6,11 +6,13 @@ import { getAnswers } from '../../app/slice.js'
 
 
 
-function DraftForm({assign_type}) {
+function DraftForm({ assign_type }) {
     const dispatch = useDispatch()
 
     const { answers } = useSelector(state => state.staff)
     const [supervisor, setSupervisor] = useState(false)
+
+    const [ans, setAns] = useState(answers)
 
     const disableSectionTen = () => {
         let section_10 = document.querySelectorAll(".section_10")
@@ -26,7 +28,7 @@ function DraftForm({assign_type}) {
             choices.push(i)
         }
 
-        
+
         return choices
     }
     const getQNA = async () => {
@@ -56,7 +58,7 @@ function DraftForm({assign_type}) {
         // console.log("useeffect")
         // console.log(questionsBank[0])
     }, [])
-            console.log(answers)
+    console.log(answers)
 
     return (
         <>
@@ -97,8 +99,16 @@ function DraftForm({assign_type}) {
                                         {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
                                     </select>
 
-                                    <textarea name='comment' className={`comments section_${answer?.section}`} align="right" type="text" id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comments 評語
-                            (Required if scored 7 to 10  必填，若評分為7至10)"  disabled={!supervisor}></textarea>
+                                    <textarea
+                                        name='comment'
+                                        className={`comments section_${answer?.section}`}
+                                        align="right"
+                                        type="text"
+                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`}
+                                        rows={5}
+                                        cols={30} placeholder="Comments 評語 (Required if scored 7 to 10  必填，若評分為7至10)"
+                                        disabled={!supervisor}
+                                        defaultValue={answer?.comments} ></textarea>
 
                                     {answer?.sales_figure === "Y" && <table style={{ border: "solid" }}>
                                         <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
@@ -116,15 +126,37 @@ function DraftForm({assign_type}) {
                                     <input name="form_id" value={answer?.form_id} type="hidden" />
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(answer?.section, answer?.question_id)} */}
-                                    <select name="choice_id" className={`choice_id section_${answer?.section}`} id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
+                                    <select 
+                                        name="choice_id" 
+                                        className={`choice_id section_${answer?.section}`} 
+                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} 
+                                        type="text" 
+                                        style={{ display: "inline-block" }}
+                                        defaultValue={answer?.choice_id}
+                                        >
                                         {dropDown().map((choice, index) =>
                                             (<option id={choice} value={choice} key={index}>{choice}</option>)
                                         )}
                                         {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
                                     </select>
 
-                                    <textarea name='comment' className={`comments section_${answer?.section}`} align="right" type="text" id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comments 評語
-                            (Required if scored 7 to 10  必填，若評分為7至10)" ></textarea>
+                                    <textarea
+                                        key={index}
+                                        name='comment'
+                                        className={`comments section_${answer?.section}`}
+                                        align="right" type="text"
+                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`}
+                                        rows={5}
+                                        cols={30} placeholder="Comments 評語
+                                        (Required if scored 7 to 10  必填，若評分為7至10)"
+                                        // value={}
+                                        defaultValue={answer?.comments}
+                                        onChange={e => {
+                                            console.log(e.target)
+                                            console.log(e.target.value)
+                                            console.log(e.target.key)
+                                        }}
+                                    ></textarea>
 
                                     {answer?.sales_figure === "Y" && <table style={{ border: "solid" }}>
                                         <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
@@ -140,6 +172,7 @@ function DraftForm({assign_type}) {
                     </form>
                 ))}
             </div>
+            
         </>
     )
 }
