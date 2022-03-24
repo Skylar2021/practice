@@ -4,8 +4,9 @@ const initialState = {
     isLogin: false,
     self_review: {},
     top_down_review: {},
-    supervisor:false,
-    questionsBank: []
+    supervisor: false,
+    questionsBank: [],
+    answers: []
     // currentUser:"",
     // pwd: "",
     // id: ""
@@ -43,9 +44,15 @@ export const staffInfo = createSlice({
         getQuestions: (state, action) => {
             state.questionsBank = action.payload
         },
-        toggleSupervisor: (state, action)=>{
+        toggleSupervisor: (state, action) => {
             state.supervisor = action.payload
 
+        },
+        getAnswers: (state, action) => {
+            state.answers = action.payload
+        },
+        editAnswers: (state, action) => {
+            
         }
     },
     extraReducers: { // async reducers 
@@ -55,6 +62,6 @@ export const staffInfo = createSlice({
     }
 })
 
-export const { login, logout, selfReview, tdReview, getQuestions,toggleSupervisor } = staffInfo.actions
+export const { login, logout, selfReview, tdReview, getQuestions, toggleSupervisor, getAnswers } = staffInfo.actions
 export default staffInfo.reducer
 
