@@ -223,6 +223,8 @@ function BlankForm({ assign_type }) {
 
     const genT_id = () => {
         let t_id = cookies.load('userData').form_type_id + cookies.load('userData').year.toString().slice(2) + cookies.load('userData').staff_id + assign_type + "01"
+
+        cookies.save("self_review",{t_id: t_id})
         // console.log(t_id)
         return t_id
     }
@@ -289,7 +291,7 @@ function BlankForm({ assign_type }) {
                                     {/* {dropDown(question?.section, question?.question_id)} */}
                                     <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
                                         {dropDown().map((choice, index) =>
-                                            (<option value={choice} key={index}>{choice}</option>)
+                                            (<option id={choice} value={choice} key={index}>{choice}</option>)
                                         )}
                                         {/* <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option> */}
                                     </select>
