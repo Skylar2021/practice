@@ -169,14 +169,40 @@ function DraftForm({ assign_type }) {
             reviewer_id: cookies.load('userData')?.supervisor_id,
             status: "1",
             appr_id: cookies.load('userData')?.supervisor_id,
-            score_ttl: calTtl(),
-            score_avg: calAvg(),
+            score_ttl: ttl,
+            score_avg: avg,
             is_optional: "N"
         }
         console.log(ansArr)
         console.log(scoreObj)
+
+        ansArr.forEach(ansObj => updateAnswer(ansObj))
+        updateScore(scoreObj)
+
+        
     }
-    // borderColor: '-internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133))'
+    const updateAnswer = async(obj) =>{
+        let response = fetch("http://localhost:8080/review/ans_update",{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(obj)
+        })
+        if(response.ok){
+            let result = await result.json()
+            console.log(result)
+        }
+    }
+    const updateScore = async(obj) =>{
+        let response = fetch("http://localhost:8080/review/score_update",{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(obj)
+        })
+        if(response.ok){
+            let result = await result.json()
+            console.log(result)
+        }
+    }
 
     useEffect(() => {
         getQNA()
@@ -312,19 +338,21 @@ function DraftForm({ assign_type }) {
             <form style={{ borderTop: "solid" }}>
 
 
-                {answers.filter(question => question.section == 20).map((question, index) => (
+                {answers.filter(answer => answer.section == 20).map((answer, index) => (
                     <form className='answer'>
 
-                        {question?.show_header === "Y" &&
-                            <label key={index}>{question?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{question?.section_header}</b></label>}
-                        <input name="section" value={question?.section} type="hidden" />
-                        <input name="question_id" value={question?.question_id} type="hidden" />
-                        <input name="form_id" value={question?.form_id} type="hidden" />
+                        {answer?.show_header === "Y" &&
+                            <label key={index}>{answer?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{answer?.section_header}</b></label>}
+                                    <input name="t_id" value={answer?.t_id} type="hidden" />
+                        
+                        <input name="section" value={answer?.section} type="hidden" />
+                        <input name="question_id" value={answer?.question_id} type="hidden" />
+                        <input name="form_id" value={answer?.form_id} type="hidden" />
 
-                        {question?.question_text}<br />{question?.question_subtext}
-                        <textarea name='comment' className='comments' id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
+                        {answer?.question_text}<br />{answer?.question_subtext}
+                        <textarea name='comment' className='comments' id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
 
-                        <input name="choice_id" className={`choice section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled />
+                        <input name="choice_id" className={`choice section_${answer?.section}`} id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled />
 
                     </form>
                 ))
