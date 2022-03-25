@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 
 import { getAnswers } from '../../app/slice.js'
 
-
-
 function DraftForm({ assign_type }) {
     const dispatch = useDispatch()
 
@@ -70,6 +68,8 @@ function DraftForm({ assign_type }) {
         setTtl(score_ttl)
         // console.log(score_ttl)
         // console.log(ttl)
+        document.querySelector(".ttl").innerHTML = score_ttl
+
         return score_ttl
     }
     const calAvg = () => {
@@ -101,6 +101,7 @@ function DraftForm({ assign_type }) {
         setAvg(score_avg.toFixed(2))
         console.log(score_avg.toFixed(2))
         // console.log(avg)
+        document.querySelector(".avg").innerHTML = score_avg.toFixed(2)
         return score_avg.toFixed(2)
     }
 
@@ -180,17 +181,17 @@ function DraftForm({ assign_type }) {
     useEffect(() => {
         getQNA()
         dropDown()
-        calTtl();
-        calAvg();
+        // calTtl();
+        // calAvg();
 
     }, [])
 
-    // useEffect(() => {
-    //     console.log("calculate")
-    //     calTtl();
-    //     calAvg();
+    useEffect(() => {
+        console.log("calculate")
+        calTtl();
+        calAvg();
 
-    // }, [ttl, avg])
+    }, [answers])
 
 
     return (
@@ -336,7 +337,7 @@ function DraftForm({ assign_type }) {
                 <button onClick={() => handleSubmit()}>submit</button>
                 <button onClick={() => calculate()}>Calculate</button>
                 <button><a href='#form-container'>Back to Top</a></button>
-                <button>Average: {avg} Total: {ttl}</button>
+                <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
             </footer>
 
 
