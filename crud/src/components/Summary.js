@@ -35,7 +35,7 @@ export default function Summary() {
         })
         if (res.ok) {
             let result = await res.json()
-            console.log(result)
+            // console.log(result)
             dispatch(tdReview(result))
             cookies.save('top_down_review', result)
             // setTopDownReview(result)

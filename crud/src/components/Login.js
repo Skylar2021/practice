@@ -93,7 +93,7 @@ export default function Login() {
             <button id='login' type="button" onClick={() => dispatch(login())}>login</button>
             <button id='logout' type="button" onClick={() => dispatch(logout())}>logout</button> */}
 
-            <Link to="/register">create account</Link>
+            {/* <Link to="/register">create account</Link> */}
 
         </>
     )

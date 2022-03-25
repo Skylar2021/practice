@@ -55,34 +55,52 @@ function DraftForm({ assign_type }) {
 
     const calTtl = () => {
         let score_ttl = 0
-        // let choices = Array.from(document.querySelectorAll(".choice_id"))
-        answers.forEach(answer => {
-            if(typeof answer.choice_id === "number"){
-            score_ttl += parseInt(answer.choice_id)
-            }
+        let choices = Array.from(document.querySelectorAll(".choice_id"))
+        choices.forEach(choice => {
+            score_ttl += parseInt(choice.value)
         })
-        // setTtl(score_ttl)
+
+        if (isNaN(score_ttl)) {
+            answers.forEach(answer => {
+                if (typeof answer.choice_id === "number") {
+                    score_ttl += parseInt(answer.choice_id)
+                }
+            })
+        }
+        setTtl(score_ttl)
         // console.log(score_ttl)
-        console.log(ttl)
+        // console.log(ttl)
         return score_ttl
     }
     const calAvg = () => {
-        let  score_ttl = 0, count = 0
-        // let choices = Array.from(document.querySelectorAll(".choice_id"))
-        answers.forEach(answer => {
-            if(typeof answer.choice_id === "number"){
-                // console.log(score_ttl)
-                
-                score_ttl += parseInt(answer.choice_id)
-                count++
-                console.log(score_ttl, count)
-            }
-
+        let score_ttl = 0, count = 0
+        let choices = Array.from(document.querySelectorAll(".choice_id"))
+        choices.forEach(choice => {
+            score_ttl += parseInt(choice.value)
+            count++
         })
         let score_avg = score_ttl / count
         // setAvg(score_avg.toFixed(2))
+
+        if (isNaN(score_avg)) {
+            score_ttl = 0
+            score_avg = 0
+            count = 0
+            answers.forEach(answer => {
+                if (typeof answer.choice_id === "number") {
+                    // console.log(score_ttl)    
+                    score_ttl += parseInt(answer.choice_id)
+                    count++
+                    // console.log(score_ttl, count)
+                }
+
+            })
+
+            score_avg = score_ttl / count
+        }
+        setAvg(score_avg.toFixed(2))
         console.log(score_avg.toFixed(2))
-        console.log(avg)
+        // console.log(avg)
         return score_avg.toFixed(2)
     }
 
@@ -100,33 +118,84 @@ function DraftForm({ assign_type }) {
             if (parseInt(answer.choice_id.value) >= 7 && answer.comment.value === "") {
                 count++
                 warnArr.push(answer.comment.id)
-                console.log(answer.choice_id)
-                console.log(answer.comment.id)
+                // console.log(answer.choice_id)
+                // console.log(answer.comment.id)
             }
         })
 
-        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border = "solid 3px red")
+        warnArr.forEach(warn => document.querySelector(`#${warn}`).classList.add("red-border"))
+        // warnArr.forEach(warn => document.querySelector(`#${warn}`).style.borderColor = "red")
 
         return count > 0 ? true : false
     }
-
-    const handleSubmit = () => {
-        calculate();
+    const removeRedBorder = () => {
+        let textAreas = document.querySelectorAll(".red-border")
+        textAreas.forEach(textArea => textArea.classList.remove("red-border"))
 
     }
+    const handleSubmit = () => {
+        removeRedBorder()
+        calculate();
+        if (checkChoiceOver7()) {
+            alert("Please enter comments if any performance statement scored 7 to 10. \n任何評估項目分數為7至10，必須輸入評語。")
+            return
+        };
+
+        let allForm = Array.from(document.querySelectorAll(".answer"))
+        let ansArr = allForm.map(obj =>
+        ({
+            t_id: obj?.t_id?.value,
+            form_id: obj?.form_id?.value,
+            section: obj?.section?.value,
+            question_id: obj?.question_id?.value,
+            choice_id: obj?.choice_id?.disabled ? null : obj?.choice_id?.value,
+            comments: obj?.comment?.disabled ? null : obj?.comment?.value,
+            // choice_id: obj?.choice_id?.value,
+            // comments: obj?.comment?.value,
+            emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
+            store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
+            emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
+            store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
+
+        })
+        )
+
+        let scoreObj = {
+            t_id: cookies.load("self_review")?.t_id,
+            form_id: cookies.load('userData')?.form_id,
+            staff_id: cookies.load('userData')?.staff_id,
+            assign_type: assign_type,
+            reviewer_id: cookies.load('userData')?.supervisor_id,
+            status: "1",
+            appr_id: cookies.load('userData')?.supervisor_id,
+            score_ttl: calTtl(),
+            score_avg: calAvg(),
+            is_optional: "N"
+        }
+        console.log(ansArr)
+        console.log(scoreObj)
+    }
+    // borderColor: '-internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133))'
 
     useEffect(() => {
         getQNA()
         dropDown()
-        console.log("useEffect")
         calTtl();
         calAvg();
-        
+
     }, [])
-   
+
+    // useEffect(() => {
+    //     console.log("calculate")
+    //     calTtl();
+    //     calAvg();
+
+    // }, [ttl, avg])
+
 
     return (
         <>
+        {console.log(ttl, avg)}
             <div width="100%" id="form-container">
                 {/* <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label> */}
@@ -152,6 +221,7 @@ function DraftForm({ assign_type }) {
                             {answer?.section == "10" ?
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
+                                    <input name="t_id" value={answer?.t_id} type="hidden" />
                                     <input name="section" value={answer?.section} type="hidden" />
                                     <input name="question_id" value={answer?.question_id} type="hidden" />
                                     <input name="form_id" value={answer?.form_id} type="hidden" />
@@ -185,20 +255,21 @@ function DraftForm({ assign_type }) {
                                 </form>
                                 :
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
+                                    <input name="t_id" value={answer?.t_id} type="hidden" />
 
                                     <input name="section" value={answer?.section} type="hidden" />
                                     <input name="question_id" value={answer?.question_id} type="hidden" />
                                     <input name="form_id" value={answer?.form_id} type="hidden" />
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(answer?.section, answer?.question_id)} */}
-                                    <select 
-                                        name="choice_id" 
-                                        className={`choice_id section_${answer?.section}`} 
-                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} 
-                                        type="text" 
+                                    <select
+                                        name="choice_id"
+                                        className={`choice_id section_${answer?.section}`}
+                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`}
+                                        type="text"
                                         style={{ display: "inline-block" }}
                                         defaultValue={answer?.choice_id}
-                                        >
+                                    >
                                         {dropDown().map((choice, index) =>
                                             (<option id={choice} value={choice} key={index}>{choice}</option>)
                                         )}
@@ -217,16 +288,16 @@ function DraftForm({ assign_type }) {
                                         // value={}
                                         defaultValue={answer?.comments}
                                         onChange={e => {
-                                            console.log(e.target)
+                                            // console.log(e.target)
                                             console.log(e.target.value)
-                                            console.log(e.target.key)
+                                            // console.log(e.target.key)
                                         }}
                                     ></textarea>
 
                                     {answer?.sales_figure === "Y" && <table style={{ border: "solid" }}>
                                         <tr><td style={{ width: "max-content" }}></td><td>Employee</td><td>Store Avg.</td></tr>
-                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' defaultValue={answer?.emp_mon_sales}/></td><td><input style={{ width: "80px" }} name='store_mon_sales' defaultValue={answer?.store_mon_sales}/></td></tr>
-                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' defaultValue={answer?.emp_avg_sales}/></td><td><input style={{ width: "80px" }} name='store_avg_sales'  defaultValue={answer?.store_avg_sales}/></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Monthly Sales</td><td><input style={{ width: "80px" }} name='emp_mon_sales' defaultValue={answer?.emp_mon_sales} /></td><td><input style={{ width: "80px" }} name='store_mon_sales' defaultValue={answer?.store_mon_sales} /></td></tr>
+                                        <tr><td style={{ width: "max-content" }}>Avg. Sales/Transaction</td><td><input style={{ width: "80px" }} name='emp_avg_sales' defaultValue={answer?.emp_avg_sales} /></td><td><input style={{ width: "80px" }} name='store_avg_sales' defaultValue={answer?.store_avg_sales} /></td></tr>
 
                                     </table>}
 
@@ -252,8 +323,8 @@ function DraftForm({ assign_type }) {
                         {question?.question_text}<br />{question?.question_subtext}
                         <textarea name='comment' className='comments' id={`S${question?.section.toString()}Q${question?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
 
-                        <input name="choice_id" className={`choice section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled/>
-                       
+                        <input name="choice_id" className={`choice section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled />
+
                     </form>
                 ))
                 }
@@ -265,10 +336,10 @@ function DraftForm({ assign_type }) {
                 <button onClick={() => handleSubmit()}>submit</button>
                 <button onClick={() => calculate()}>Calculate</button>
                 <button><a href='#form-container'>Back to Top</a></button>
-                <button>Average: {calAvg()} Total: {calTtl()}</button>
+                <button>Average: {avg} Total: {ttl}</button>
             </footer>
-            
-            
+
+
         </>
     )
 }

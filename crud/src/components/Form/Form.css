@@ -18,6 +18,10 @@ select{
 
 }
 
+.red-border{
+    border-color: #ff0000;
+}
+
 @media screen and (max-width: 750px) {
     .qna-container{
         display: "flex";

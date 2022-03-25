@@ -50,10 +50,8 @@ export const staffInfo = createSlice({
         },
         getAnswers: (state, action) => {
             state.answers = action.payload
-        },
-        editAnswers: (state, action) => {
-            
         }
+       
     },
     extraReducers: { // async reducers 
         // [testing.fulfilled]: (state, action) => {
