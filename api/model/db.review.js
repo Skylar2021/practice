@@ -19,6 +19,21 @@ export class Review {
             console.log(err)
         }
     }
+    static async getSummary_self_alt(staff_id,year){
+        try {
+            let con = await sql.connect(sqlConfig)
+            let result = await con.request()
+                .input('staff_id', sql.VarChar(50), staff_id)
+                .input('year', sql.VarChar(50), year)
+                .query("Select staff.staff_id,staff.name,staff.date_joined,dept.dept_name,position.position_desc,staff.grade_id as grade,t_id = null,completion_dt = null, status = null,score_avg = null, staff_form.form_type_id, form.appr_from_date, form.appr_to_date,form.close_date FROM staff join dept on staff.dept_id = dept.dept_id join position on staff.position_id = position.position_id join staff_form on staff.staff_id = staff_form.staff_id join form on form.form_type_id = staff_form.form_type_id Where staff.staff_id = @staff_id and form.year = @year")
+
+            console.log(result.recordset[0])
+            return result.recordset[0]
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
 
     static async getSummary_td(staff_id, assign_type) {
 

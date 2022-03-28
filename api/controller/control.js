@@ -238,7 +238,7 @@ export default class Controller {
         console.log("req.session")
         console.log(req.session)
         let assign_type = 'S'
-        let staffId = req.session.userData == true ? req.session.userData["staff_id"] : req.body.id
+        let staffId = req.session.userData ? req.session.userData["staff_id"] : req.body.id
         console.log(staffId)
 
 
@@ -247,6 +247,61 @@ export default class Controller {
             console.log("staff_id:", staffId)
             try {
                 let result = await Review.getSummary_self(staffId, assign_type)
+                console.log("get_self_review_summary result: ", result)
+
+                if (result) {
+                    req.session.review = {}
+                    req.session.review["t_id"] = result.t_id
+                    req.session.review["close_date"] = result.close_date
+                    req.session.review["appr_from_date"] = result.appr_from_date
+                    req.session.review["appr_to_date"] = result.appr_to_date
+                    console.log(req.session.review["t_id"])
+                    res.status(200).json(result)
+                    console.log("get_self_review_summary", result)
+                } else {
+                    let year = req.session.userData ? req.session.userData["year"] : req.body.year
+                    try {
+                        let result = await Review.getSummary_self_alt(staffId, year)
+                        if (result) {
+                            req.session.review = {}
+                            req.session.review["t_id"] = result.t_id
+                            req.session.review["close_date"] = result.close_date
+                            req.session.review["appr_from_date"] = result.appr_from_date
+                            req.session.review["appr_to_date"] = result.appr_to_date
+                            console.log(req.session.review["t_id"])
+                            res.status(200).json(result)
+                            // console.log(result)
+                        }
+                    } catch (err) {
+                        console.log(err)
+                        res.status(400).json({ message: "Please try again! " })
+                    }
+
+
+                }
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again! " })
+            }
+        } else {
+            res.status(400).json({ message: "staff id empty" })
+        }
+
+    }
+    get_self_review_summary_alt = async (req, res) => {
+        console.log("req.session")
+        console.log(req.session)
+        // let assign_type = 'S'
+        let staffId = req.session.userData ? req.session.userData["staff_id"] : req.body.id
+        let year = req.session.userData ? req.session.userData["year"] : req.body.year
+        console.log(staffId)
+
+
+        if (staffId) {
+
+            console.log("staff_id:", staffId)
+            try {
+                let result = await Review.getSummary_self_alt(staffId, year)
                 if (result) {
                     req.session.review = {}
                     req.session.review["t_id"] = result.t_id
@@ -262,7 +317,7 @@ export default class Controller {
                 res.status(400).json({ message: "Please try again! " })
             }
         } else {
-            res.status(400).json({ message: "staff id empty" })
+            res.status(400).json({ message: "staff id or year empty" })
         }
 
     }
