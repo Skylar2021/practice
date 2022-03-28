@@ -97,9 +97,15 @@ function BlankForm({ assign_type }) {
         // console.log(ttl)
         // console.log(avg)
     }
+    const removeRedBorder = () => {
+        let textAreas = document.querySelectorAll(".red-border")
+        textAreas.forEach(textArea => textArea.classList.remove("red-border"))
 
+    }
 
     const handleSubmit = () => {
+        removeRedBorder()
+
         calculate();
 
         if (checkChoiceOver7()) {
@@ -216,7 +222,7 @@ function BlankForm({ assign_type }) {
             }
         })
 
-        warnArr.forEach(warn => document.querySelector(`#${warn}`).style.border = "solid 3px red")
+        warnArr.forEach(warn => document.querySelector(`#${warn}`).classList.add("red-border"))
 
         return count > 0 ? true : false
     }
