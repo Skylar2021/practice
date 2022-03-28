@@ -72,22 +72,29 @@ function BlankForm({ assign_type }) {
         choices.forEach(choice => {
             score_ttl += parseInt(choice.value)
         })
+
         setTtl(score_ttl)
         console.log(score_ttl)
         // console.log(ttl)
+        document.querySelector(".ttl").innerHTML = score_ttl
+
         return score_ttl
     }
     const calAvg = () => {
-        let score_avg = 0, score_ttl = 0, count = 0
+        let score_ttl = 0, count = 0
         let choices = Array.from(document.querySelectorAll(".choice_id"))
         choices.forEach(choice => {
             score_ttl += parseInt(choice.value)
             count++
         })
-        score_avg = score_ttl / count
+        let score_avg = score_ttl / count
+
+
         setAvg(score_avg.toFixed(2))
         console.log(score_avg.toFixed(2))
         // console.log(avg)
+        document.querySelector(".avg").innerHTML = score_avg.toFixed(2)
+
         return score_avg.toFixed(2)
     }
 
@@ -380,7 +387,8 @@ function BlankForm({ assign_type }) {
 
                 <button onClick={() => calculate()}>Calculate</button>
                 <button><a href='#form-container'>Back to Top</a></button>
-                <button>Average: {avg} Total: {ttl}</button>
+                <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
+
                 {/* <button></button> */}
             </footer>
         </>
