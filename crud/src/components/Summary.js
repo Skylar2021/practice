@@ -1,30 +1,34 @@
 import { useEffect, useState } from "react"
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import cookies from 'react-cookies';
 
-import { selfReview,tdReview } from '../app/slice.js'
+import { selfReview, tdReview } from '../app/slice.js'
 
 export default function Summary() {
     const dispatch = useDispatch()
 
-    const {self_review,top_down_review} = useSelector(state=>state.staff)
+    const { self_review, top_down_review } = useSelector(state => state.staff)
 
     const selfReviewData = async () => {
-        // console.log('selfReviewData fired')
+        console.log('selfReviewData fired')
         let res = await fetch("http://localhost:8080/review/get_self_review_summary", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ "id": `${cookies.load('userData')?.staff_id}` }),
             credentials: 'include'
         })
-        if (res.ok) {
+        if (res.ok ) {
             let result = await res.json()
             console.log(result)
             dispatch(selfReview(result))
             cookies.save('self_review', result)
+        } else {
+            let result = await res.json()
+            console.log(result)
+            
         }
     }
-    
+
     const topDownReviewData = async () => {
         // console.log('selfReviewData fired')
         let res = await fetch("http://localhost:8080/review/get_td_review_summary", {
@@ -35,10 +39,33 @@ export default function Summary() {
         })
         if (res.ok) {
             let result = await res.json()
-            // console.log(result)
+            console.log(result)
             dispatch(tdReview(result))
             cookies.save('top_down_review', result)
             // setTopDownReview(result)
+        }
+    }
+
+    const selfReviewStatus = (status) => {
+        if (status === 1) {
+            return "Draft"
+        } else if (status === 2) {
+            return "Submitted"
+        } else if (status === null) {
+            return "click to create"
+        } else {
+            return status
+        }
+    }
+    const tdReviewStatus = (status) => {
+        if (status === 1) {
+            return "click to review"
+        } else if (status === 2) {
+            return "Confirmed"
+        } else if (status === null) {
+            return "not review yet"
+        } else {
+            return status
         }
     }
     useEffect(() => {
@@ -49,7 +76,7 @@ export default function Summary() {
         // console.log("cookies top_down_review: ")
         // console.log(cookies.load("top_down_review"))
     }, [])
-    
+
     return (
         <>
             <h1>Employee Information<br />職員資料</h1>
@@ -93,7 +120,7 @@ export default function Summary() {
                     <tr>
                         <td>{self_review?.close_date?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
                         <td>{self_review?.completion_dt?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
-                        <td>{self_review?.status}</td>
+                        <td>{selfReviewStatus(self_review?.status)}</td>
                         <td>{self_review?.t_id ? self_review.t_id : "no self review create"}</td>
                     </tr>
                 </thead>
@@ -123,7 +150,7 @@ export default function Summary() {
                         <td>{top_down_review?.dept_name}</td>
                         <td>{top_down_review?.position_desc}</td>
                         <td>{top_down_review?.completion_dt?.slice(0, (top_down_review.completion_dt?.indexOf('T')))}</td>
-                        <td>{top_down_review?.status}</td>
+                        <td>{tdReviewStatus(top_down_review?.status)}</td>
                         <td>{top_down_review?.t_id ? top_down_review.t_id : "no top-down review create"}</td>
                     </tr>
                 </thead>
