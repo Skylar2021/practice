@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import cookies from 'react-cookies';
 
 import { selfReview, tdReview } from '../app/slice.js'
+// import BlankForm from "./Form/BlankForm.js";
 
 export default function Summary() {
     const dispatch = useDispatch()
@@ -52,7 +55,7 @@ export default function Summary() {
         } else if (status === 2) {
             return "Submitted"
         } else if (status === null) {
-            return "click to create"
+            return "no self review"
         } else {
             return status
         }
@@ -121,7 +124,7 @@ export default function Summary() {
                         <td>{self_review?.close_date?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
                         <td>{self_review?.completion_dt?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
                         <td>{selfReviewStatus(self_review?.status)}</td>
-                        <td>{self_review?.t_id ? self_review.t_id : "no self review create"}</td>
+                        <td><Link to='/self_review'>{self_review?.t_id ? self_review.t_id : "click to create"}</Link></td>
                     </tr>
                 </thead>
             </table>
@@ -151,7 +154,7 @@ export default function Summary() {
                         <td>{top_down_review?.position_desc}</td>
                         <td>{top_down_review?.completion_dt?.slice(0, (top_down_review.completion_dt?.indexOf('T')))}</td>
                         <td>{tdReviewStatus(top_down_review?.status)}</td>
-                        <td>{top_down_review?.t_id ? top_down_review.t_id : "no top-down review create"}</td>
+                        <td>{top_down_review?.t_id ? top_down_review.t_id : "no top-down review"}</td>
                     </tr>
                 </thead>
             </table>
