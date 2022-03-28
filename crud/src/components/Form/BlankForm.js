@@ -246,7 +246,7 @@ function BlankForm({ assign_type }) {
 
     return (
         <>
-            <div width="100%" id="form-container">
+            <div width="100%" id="form-container" className='blank-form'>
                 <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label>
                 {questionsBank.filter(question => question.section !== 20).map((question, index) => (
@@ -268,7 +268,9 @@ function BlankForm({ assign_type }) {
                                 <br />
                                 <label>{question?.question_subtext}</label>
                             </div>
-                            {question?.section == "10" ?
+                            {question?.section == "10" 
+                            
+                            ?
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
                                     <input name="section" value={question?.section} type="hidden" />
@@ -294,7 +296,7 @@ function BlankForm({ assign_type }) {
                                     </table>}
 
                                 </form>
-                                :
+                            :
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
                                     <input name="section" value={question?.section} type="hidden" />
