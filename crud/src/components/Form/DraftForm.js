@@ -72,6 +72,7 @@ function DraftForm({ assign_type }) {
 
         return score_ttl
     }
+
     const calAvg = () => {
         let score_ttl = 0, count = 0
         let choices = Array.from(document.querySelectorAll(".choice_id"))
@@ -177,7 +178,9 @@ function DraftForm({ assign_type }) {
         console.log(scoreObj)
 
         ansArr.forEach(ansObj => updateAnswer(ansObj))
-        updateScore(scoreObj)
+        if(typeof ttl === "number" && typeof avg === "number"){
+            updateScore(scoreObj)
+        }
 
         
     }
@@ -223,7 +226,7 @@ function DraftForm({ assign_type }) {
     return (
         <>
         {console.log(ttl, avg)}
-            <div width="100%" id="form-container">
+            <div width="100%" id="form-container" className='draft-form'>
                 {/* <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label> */}
                 {answers.filter(answer => answer.section !== 20).map((answer, index) => (
@@ -336,7 +339,6 @@ function DraftForm({ assign_type }) {
                 ))}
             </div>
             <form style={{ borderTop: "solid" }}>
-
 
                 {answers.filter(answer => answer.section == 20).map((answer, index) => (
                     <form className='answer'>
