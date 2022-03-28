@@ -2,6 +2,7 @@ import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
 import BlankForm from './Form/BlankForm';
 import DraftForm from './Form/DraftForm';
+import SubmittedForm from './Form/SubmittedForm';
 
 import RatingInstruction from './RatingInstruction'
 import StaffInfo from './StaffInfo'
@@ -24,18 +25,24 @@ function SelfReview() {
         return [year, month, day].join('-');
     }
 
-    let Appraisal_Period =() =>{ 
+    let Appraisal_Period = () => {
         return cookies.load("self_review")?.appr_from_date?.slice(0, (cookies.load("self_review").appr_from_date.indexOf('T'))) + " to " + cookies.load("self_review")?.appr_to_date?.slice(0, (cookies.load("self_review").appr_to_date.indexOf('T')))
-    } 
+    }
     // let Appraisal_Period_1 =() =>{ 
     //     return self_review?.appr_from_date?.slice(0, (self_review.appr_from_date.indexOf('T'))) + "-" + self_review?.appr_to_date?.slice(0, (self_review.appr_to_date.indexOf('T')))
     // } 
-
+    let selfReviewFormRender = () =>{
+        let status = cookies.load("self_review")?.status
+        if(status === 1) {return <DraftForm assign_type={"S"}/>}
+        else if(status === 2) {return <SubmittedForm assign_type={"S"}/>}
+        else if(status === null ) {return <BlankForm assign_type={"S"}/>}
+        else{return <SubmittedForm assign_type={"S"}/>}
+    }
 
     return (
         <>
             <h1>Performance Appraisal Form 表現評估表</h1>
-        <StaffInfo />
+            <StaffInfo />
             {/*
             <h2>Employee Information<br />職員資料</h2>
             
@@ -70,9 +77,10 @@ function SelfReview() {
                     </tr>
                 </tbody>
             </table> */}
-            <RatingInstruction/>
+            <RatingInstruction />
             {/* <BlankForm assign_type={"S"}/> */}
-            <DraftForm assign_type={"S"}/>
+            {/* <DraftForm assign_type={"S"} /> */}
+           { selfReviewFormRender()}
 
         </>
     )
