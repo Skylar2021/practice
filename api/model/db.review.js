@@ -17,6 +17,7 @@ export class Review {
             return result.recordset[0]
         } catch (err) {
             console.log(err)
+            return {err: err}
         }
     }
     static async getSummary_self_alt(staff_id,year){
@@ -31,6 +32,8 @@ export class Review {
             return result.recordset[0]
         } catch (err) {
             console.log(err)
+            return {err: err}
+
         }
 
     }
@@ -48,6 +51,8 @@ export class Review {
             return result.recordset[0]
         } catch (err) {
             console.log(err)
+            return {err: err}
+
         }
 
     }
@@ -66,6 +71,8 @@ export class Review {
             return result.recordset
         } catch (err) {
             console.log(err)
+            return {err: err}
+
         }
 
     }
@@ -81,6 +88,8 @@ export class Review {
             return result.recordset
         } catch (err) {
             console.log(err)
+            return {err: err}
+
 
         }
     }
@@ -99,6 +108,8 @@ export class Review {
 
         } catch (err) {
             console.log(err)
+            return {err: err}
+
 
         }
     }
@@ -123,7 +134,7 @@ export class Review {
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "insert failed, please try again" }
+            return { err: err, message: "insert failed, please try again" }
 
         }
 
@@ -148,7 +159,7 @@ export class Review {
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "update failed, please try again" }
+            return { err: err, message: "update failed, please try again" }
 
         }
 
@@ -178,7 +189,7 @@ export class Review {
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "insert failed, please try again" }
+            return { err: err, message: "insert failed, please try again" }
 
         }
 
@@ -206,7 +217,7 @@ export class Review {
             return { rowsAffected: result.rowsAffected[0] }
         } catch (err) {
             console.log(err)
-            return { payload: obj, message: "update failed, please try again" }
+            return { err: err, message: "update failed, please try again" }
 
         }
 
