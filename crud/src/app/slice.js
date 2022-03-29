@@ -6,7 +6,8 @@ const initialState = {
     top_down_review: {},
     supervisor: false,
     questionsBank: [],
-    answers: []
+    answers: [],
+    score:{}
     // currentUser:"",
     // pwd: "",
     // id: ""
@@ -50,6 +51,9 @@ export const staffInfo = createSlice({
         },
         getAnswers: (state, action) => {
             state.answers = action.payload
+        },
+        getScore: (state, action) => {
+            state.score = action.payload
         }
        
     },
@@ -60,6 +64,6 @@ export const staffInfo = createSlice({
     }
 })
 
-export const { login, logout, selfReview, tdReview, getQuestions, toggleSupervisor, getAnswers } = staffInfo.actions
+export const { login, logout, selfReview, tdReview, getQuestions, toggleSupervisor, getAnswers,getScore } = staffInfo.actions
 export default staffInfo.reducer
 
