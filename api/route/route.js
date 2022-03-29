@@ -22,7 +22,7 @@ export function route() {
     // router.get('/review/ans+score_insert',)
     router.put('/review/ans_update',control.updateAnswer)
     router.post('/review/ans_insert',control.insertAnswer)
-    router.get('/review/score_get',control.getScores)
+    router.post('/review/score_get',control.getScores)
     router.put('/review/score_update',control.updateScore)
     router.post('/review/score_insert',control.insertScore)
     router.get('/review/score_summary_get',control.getScoreSummary)
