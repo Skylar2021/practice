@@ -1,11 +1,14 @@
 import cookies from 'react-cookies';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getAnswers } from '../../app/slice.js'
 
 function DraftForm({ assign_type }) {
     const dispatch = useDispatch()
+    const navigate = useNavigate();
+
 
     const { answers } = useSelector(state => state.staff)
     const [supervisor, setSupervisor] = useState(false)
@@ -135,6 +138,54 @@ function DraftForm({ assign_type }) {
         textAreas.forEach(textArea => textArea.classList.remove("red-border"))
 
     }
+
+    const handleSave = () =>{
+        removeRedBorder();
+        calculate();
+        let allForm = Array.from(document.querySelectorAll(".answer"))
+        let ansArr = allForm.map(obj =>
+        ({
+            t_id: obj?.t_id?.value,
+            form_id: obj?.form_id?.value,
+            section: obj?.section?.value,
+            question_id: obj?.question_id?.value,
+            choice_id: obj?.choice_id?.disabled ? null : obj?.choice_id?.value,
+            comments: obj?.comment?.disabled ? null : obj?.comment?.value,
+            // choice_id: obj?.choice_id?.value,
+            // comments: obj?.comment?.value,
+            emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
+            store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
+            emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
+            store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
+
+        })
+        )
+
+        let scoreObj = {
+            t_id: cookies.load("self_review")?.t_id,
+            form_id: cookies.load('userData')?.form_id,
+            staff_id: cookies.load('userData')?.staff_id,
+            assign_type: assign_type,
+            reviewer_id: cookies.load('userData')?.supervisor_id,
+            status: "1",
+            appr_id: cookies.load('userData')?.supervisor_id,
+            score_ttl: calTtl(),
+            score_avg: calAvg(),
+            is_optional: "N"
+        }
+        ansArr.forEach(ansObj => updateAnswer(ansObj))
+        ansArr.forEach(ansObj => updateAnswer(ansObj))
+        if(typeof ttl === "number" && typeof avg === "number"){
+            updateScore(scoreObj)
+        }
+
+        console.log(ansArr)
+        console.log(scoreObj)
+        
+        // navigate('/summary')
+
+    }
+
     const handleSubmit = () => {
         removeRedBorder()
         calculate();
@@ -238,7 +289,6 @@ function DraftForm({ assign_type }) {
                                 <b>{answer?.section_header}</b>
 
                             </div>}
-
 
                         <div className='qna-container' style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 
@@ -363,7 +413,7 @@ function DraftForm({ assign_type }) {
             </form>
 
             <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
-                <button>Save</button>
+                <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
                 <button onClick={() => calculate()}>Calculate</button>
                 <button><a href='#form-container'>Back to Top</a></button>

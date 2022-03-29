@@ -109,7 +109,49 @@ function BlankForm({ assign_type }) {
         textAreas.forEach(textArea => textArea.classList.remove("red-border"))
 
     }
+    const handleSave = () =>{
+        removeRedBorder();
+        calculate();
+        let allForm = Array.from(document.querySelectorAll(".answer"))
+        let ansArr = allForm.map(obj =>
+        ({
+            t_id: genT_id(),
+            form_id: obj?.form_id?.value,
+            section: obj?.section?.value,
+            question_id: obj?.question_id?.value,
+            choice_id: obj?.choice_id?.disabled ? null : obj?.choice_id?.value,
+            comments: obj?.comment?.disabled ? null : obj?.comment?.value,
+            // choice_id: obj?.choice_id?.value,
+            // comments: obj?.comment?.value,
+            emp_mon_sales: obj?.emp_mon_sales ? obj?.emp_mon_sales.value : null,
+            store_mon_sales: obj?.store_mon_sales ? obj?.store_mon_sales.value : null,
+            emp_avg_sales: obj?.emp_avg_sales ? obj?.emp_avg_sales.value : null,
+            store_avg_sales: obj?.store_avg_sales ? obj?.store_avg_sales.value : null,
 
+        })
+        )
+
+        let scoreObj = {
+            t_id: genT_id(),
+            form_id: cookies.load('userData')?.form_id,
+            staff_id: cookies.load('userData')?.staff_id,
+            assign_type: assign_type,
+            reviewer_id: cookies.load('userData')?.supervisor_id,
+            status: "1",
+            appr_id: cookies.load('userData')?.supervisor_id,
+            score_ttl: calTtl(),
+            score_avg: calAvg(),
+            is_optional: "N"
+        }
+        insertScore(scoreObj)
+        ansArr.forEach(ansObj => insertAnswer(ansObj))
+
+        console.log(ansArr)
+        console.log(scoreObj)
+        
+        navigate('/summary')
+
+    }
     const handleSubmit = () => {
         removeRedBorder()
 
@@ -145,7 +187,7 @@ function BlankForm({ assign_type }) {
             staff_id: cookies.load('userData')?.staff_id,
             assign_type: assign_type,
             reviewer_id: cookies.load('userData')?.supervisor_id,
-            status: "1",
+            status: "2",
             appr_id: cookies.load('userData')?.supervisor_id,
             score_ttl: calTtl(),
             score_avg: calAvg(),
@@ -384,7 +426,7 @@ function BlankForm({ assign_type }) {
 
 
             <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
-                <button>Save</button>
+                <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
 
                 <button onClick={() => calculate()}>Calculate</button>
