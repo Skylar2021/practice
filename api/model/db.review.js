@@ -82,10 +82,11 @@ export class Review {
             let con = await sql.connect(sqlConfig)
             let result = await con.request()
                 .input('staff_id', sql.VarChar(50), id)
-                .query("select staff.staff_id, s.*, t.* from staff left join (select * from score where assign_type = 'S') s  on staff.staff_id = s.staff_id left join (select * from score  where assign_type = 'T') t on s.staff_id = t.staff_id where staff.staff_id = @staff_id")
+                // .query("select staff.staff_id, s.*, t.* from staff left join (select * from score where assign_type = 'S') s  on staff.staff_id = s.staff_id left join (select * from score  where assign_type = 'T') t on s.staff_id = t.staff_id where staff.staff_id = @staff_id")
+                .query("select staff.staff_id, s.t_id,s.form_id, s.reviewer_id as reviewer_id_S,s.appr_id ,s.score_avg as score_avg_S, s.score_ttl as score_ttl_S, t.score_avg as score_avg_T, t.score_ttl as score_ttl_T, s.appr_dt from staff left join (select * from score where assign_type = 'S') s  on staff.staff_id = s.staff_id left join (select * from score  where assign_type = 'T') t on s.staff_id = t.staff_id where staff.staff_id = @staff_id")
             console.log(result)
             console.log(result.recordset)
-            return result.recordset
+            return result.recordset[0]
         } catch (err) {
             console.log(err)
             return {err: err}
