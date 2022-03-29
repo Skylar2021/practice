@@ -73,3 +73,15 @@ a{
     transform: rotate(360deg);
   }
 }
+footer{
+  display: flex;
+   justify-content : space-evenly;
+    position: fixed;
+     bottom: 0px;
+}
+
+@media print {
+  footer{
+    display: none;
+  }
+}
