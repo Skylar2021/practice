@@ -402,7 +402,7 @@ function DraftForm({ assign_type }) {
                         <input name="form_id" value={answer?.form_id} type="hidden" />
 
                         {answer?.question_text}<br />{answer?.question_subtext}
-                        <textarea name='comment' className='comments' id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment"></textarea>
+                        <textarea name='comment' className='comments' id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`} rows={5} cols={30} placeholder="Comment" defaultValue={answer?.comments}></textarea>
 
                         <input name="choice_id" className={`choice section_${answer?.section}`} id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} type="hidden" style={{ display: "inline-block" }} disabled />
 
@@ -416,7 +416,7 @@ function DraftForm({ assign_type }) {
                 <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
                 <button onClick={() => calculate()}>Calculate</button>
-                <button><a href='#form-container'>Back to Top</a></button>
+                <button><a href='#top'>Back to Top</a></button>
                 <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
             </footer>
 
