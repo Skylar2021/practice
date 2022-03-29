@@ -407,7 +407,7 @@ export default class Controller {
     // index = 0 >>> self
     // index = 1 >>> top down
     getScores = async (req, res) => {
-        if (req.session.userData["staff_id"]) {
+        if (req.session?.userData?.staff_id) {
             try {
                 let result = await Review.getScoreByStaffId(req.session.userData["staff_id"])
                 if (result) {
@@ -416,14 +416,24 @@ export default class Controller {
                 }
             } catch (err) {
                 console.log(err)
-                res.status(400).json({ message: "Please try again!" })
+                res.status(400).json({ message: "Please try again!", err: err })
             }
 
         } else {
-            res.status(400).json({ message: "staff ID empty" })
+            try {
+                let result = await Review.getScoreByStaffId(req.body.staff_id)
+                if (result) {
+                    console.log(result)
+                    res.status(200).json(result)
+                }
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({ message: "Please try again!", err: err })
+            }
         }
 
     }
+
     updateAnswer = async (req, res) => {
         if (req.body) {
             console.log(req.body)
@@ -466,7 +476,7 @@ export default class Controller {
                 if (result.rowsAffected) {
                     res.status(200).json({ message: "Score updated" })
                 } else {
-                    res.status(400).json({ message: "fail to update score" })
+                    res.status(400).json({ message: "fail to update score", err: result })
 
                 }
             } catch (err) {
