@@ -139,6 +139,28 @@ function DraftForm({ assign_type }) {
 
     }
 
+    const sendEmail = async () => {
+        let body = {
+            deadline: cookies.load("self_review")?.close_date?.slice(0, (cookies.load("self_review")?.close_date.indexOf('T'))),
+            receiver: cookies.load("userData")?.name,
+            address: cookies.load("userData")?.email,
+            assign_type
+        }
+        let response = await fetch("http://localhost:8080/email/instant", {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+
+        })
+        if(response.ok){
+            let result = await response.json()
+            console.log(result)
+        }else{
+            let result = await response.json()
+            console.log("error",result)
+        }
+    }
+
     const handleSave = () =>{
         removeRedBorder();
         calculate();
@@ -219,7 +241,7 @@ function DraftForm({ assign_type }) {
             staff_id: cookies.load('userData')?.staff_id,
             assign_type: assign_type,
             reviewer_id: cookies.load('userData')?.supervisor_id,
-            status: "1",
+            status: "2",
             appr_id: cookies.load('userData')?.supervisor_id,
             score_ttl: ttl,
             score_avg: avg,
@@ -232,6 +254,7 @@ function DraftForm({ assign_type }) {
         if(typeof ttl === "number" && typeof avg === "number"){
             updateScore(scoreObj)
         }
+        sendEmail()
 
         
     }
@@ -320,7 +343,7 @@ function DraftForm({ assign_type }) {
                                         align="right"
                                         type="text"
                                         id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`}
-                                        rows={5}
+                                        rows={4}
                                         cols={30} placeholder="Comments 評語 (Required if scored 7 to 10  必填，若評分為7至10)"
                                         disabled={!supervisor}
                                         defaultValue={answer?.comments} ></textarea>
@@ -362,7 +385,7 @@ function DraftForm({ assign_type }) {
                                         className={`comments section_${answer?.section}`}
                                         align="right" type="text"
                                         id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_cmt`}
-                                        rows={5}
+                                        rows={4}
                                         cols={30} placeholder="Comments 評語
                                         (Required if scored 7 to 10  必填，若評分為7至10)"
                                         // value={}
@@ -416,6 +439,7 @@ function DraftForm({ assign_type }) {
                 <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
                 <button onClick={() => calculate()}>Calculate</button>
+                <button onClick={() => calculate()}>Send Email</button>
                 <button><a href='#top'>Back to Top</a></button>
                 <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
             </footer>

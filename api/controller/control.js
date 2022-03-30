@@ -2,6 +2,8 @@ import { User } from '../model/db.user.js'
 import { Record } from '../model/db.record.js'
 import { Staff } from '../model/db.staff.js'
 import { Review } from '../model/db.review.js'
+import { instantEmail } from '../email/mail_instant.js'
+import { scheduleEmail } from '../email/mail_schedule.js'
 // const User = require('../model/db.model')
 
 
@@ -231,6 +233,8 @@ export default class Controller {
             res.status(400).json({ message: "Staff ID or password empty" })
         }
     }
+
+    // Appraisal Review
 
     get_self_review_summary = async (req, res) => {
 
@@ -619,6 +623,24 @@ export default class Controller {
                 res.status(400).json({ message: "Please try again!", error: err.message })
 
             }
+        }
+    }
+
+    // Send Email
+
+    sendInstantEmail = async (req, res) => {
+        // deadline(date string), receiver, receiverEmailAddress, assign_type = 'S'
+        let email = new instantEmail(req.body.deadline, req.body.receiver, req.body.address, req.body.assign_type)
+        try {
+            let response = email.sendInstantMail()
+            console.log(response)
+            res.status(200).json({message:"email sent",response:response})
+        } catch (err) {
+            console.log(err)
+            res.status(400).json({message:"fail",err:err})
+
+
+
         }
     }
 

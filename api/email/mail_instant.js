@@ -74,13 +74,13 @@ export class instantEmail {
             // console.log(this.messageInfo)
             if (err) {
                 console.log(err)
-                return
+                return {status: "fail",err:err}
             }
             if (info) {
                 console.log(info)
+                return {status: "success",info:info.response}
             }
         })
-
     }
 
 }

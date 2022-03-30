@@ -16,7 +16,7 @@ function BlankForm({ assign_type }) {
     const [supervisor, setSupervisor] = useState(false)
     const [ttl, setTtl] = useState(0)
     const [avg, setAvg] = useState(0)
-    const { questionsBank } = useSelector(state => state.staff)
+    const { questionsBank,self_review, top_down_review } = useSelector(state => state.staff)
 
     const disableSectionTen = () => {
         let section_10 = document.querySelectorAll(".section_10")
@@ -109,7 +109,30 @@ function BlankForm({ assign_type }) {
         textAreas.forEach(textArea => textArea.classList.remove("red-border"))
 
     }
-    const handleSave = () =>{
+
+    const sendEmail = async () => {
+        let body = {
+            deadline: self_review?.close_date?.slice(0, (self_review.close_date.indexOf('T'))),
+            receiver: cookies.load("userData")?.name,
+            address: cookies.load("td_review")?.email,
+            assign_type
+        }
+        let response = await fetch("http://localhost:8080/email/instant", {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+
+        })
+        if(response.ok){
+            let result = await response.json()
+            console.log(result)
+        }else{
+            let result = await response.json()
+            console.log("error",result)
+        }
+    }
+
+    const handleSave = () => {
         removeRedBorder();
         calculate();
         let allForm = Array.from(document.querySelectorAll(".answer"))
@@ -148,7 +171,7 @@ function BlankForm({ assign_type }) {
 
         console.log(ansArr)
         console.log(scoreObj)
-        
+
         navigate('/summary')
 
     }
@@ -198,26 +221,7 @@ function BlankForm({ assign_type }) {
 
         console.log(ansArr)
         console.log(scoreObj)
-        // let objArr = {
-        //     t_id: genT_id(),
-        //     form_id: allForm[13]?.form_id?.value,
-        //     section: allForm[13]?.section?.value,
-        //     question_id: allForm[13]?.question_id?.value,
-        //     choice_id: allForm[13]?.choice_id?.value,
-        //     choice_id: allForm[13]?.choice_id?.disabled ? null : allForm[13]?.choice_id?.value,
-        //     comments: allForm[13]?.comment?.disabled ? null : allForm[13]?.comment?.value,
-        //     // comments: allForm[13]?.comment?.value,
-        //     emp_mon_sales: allForm[13]?.emp_mon_sales ? allForm[13]?.emp_mon_sales.value : null,
-        //     store_mon_sales: allForm[13]?.store_mon_sales ? allForm[13]?.store_mon_sales.value : null,
-        //     emp_avg_sales: allForm[13]?.emp_avg_sales ? allForm[13]?.emp_avg_sales.value : null,
-        //     store_avg_sales: allForm[13]?.store_avg_sales ? allForm[13]?.store_avg_sales.value : null,
-
-        // }
-
-        // console.log(objArr)
-        // console.log(allForm[13])
-        // console.log(allForm[13].comment.disabled)
-        // console.log(allForm[10].comment.disabled)
+        sendEmail()
         navigate('/summary')
     }
 
@@ -279,7 +283,7 @@ function BlankForm({ assign_type }) {
     const genT_id = () => {
         let t_id = cookies.load('userData').form_type_id + cookies.load('userData').year.toString().slice(2) + cookies.load('userData').staff_id + assign_type + "01"
 
-        cookies.save("self_review",{t_id: t_id})
+        cookies.save("self_review", { t_id: t_id })
         // console.log(t_id)
         return t_id
     }
@@ -310,9 +314,9 @@ function BlankForm({ assign_type }) {
                                 <br />
                                 <label>{question?.question_subtext}</label>
                             </div>
-                            {question?.section == "10" 
-                            
-                            ?
+                            {question?.section == "10"
+
+                                ?
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
                                     <input name="section" value={question?.section} type="hidden" />
@@ -338,7 +342,7 @@ function BlankForm({ assign_type }) {
                                     </table>}
 
                                 </form>
-                            :
+                                :
                                 <form className='answer' width="40%" style={{ borderLeft: "dashed 1px", paddingLeft: "5px" }}>
 
                                     <input name="section" value={question?.section} type="hidden" />
@@ -430,7 +434,7 @@ function BlankForm({ assign_type }) {
                 <button onClick={() => handleSubmit()}>submit</button>
 
                 <button onClick={() => calculate()}>Calculate</button>
-                <button><a href='#form-container'>Back to Top</a></button>
+                <button><a href='#top'>Back to Top</a></button>
                 <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
 
                 {/* <button></button> */}
