@@ -25,12 +25,15 @@ export function route() {
     router.post('/review/score_get',control.getScores)
     router.put('/review/score_update',control.updateScore)
     router.post('/review/score_insert',control.insertScore)
-    router.get('/review/score_summary_get',control.getScoreSummary)
-    router.get('/review/result_get',control.getResult)
+    router.post('/review/score_summary_get',control.getScoreSummary)
+    router.post('/review/result_get',control.getResult)
     router.put('/review/result_update',control.updateResult)
     router.post('/review/result_insert',control.insertResult)
-    router.get('/review/get_topdown',control.getTopDown)
-    router.get('/review/get_dept_summary',control.getDeptSummary)
+    router.post('/review/get_topdown',control.getTopDown)
+    router.post('/review/get_dept_summary',control.getDeptSummary)
+
+    // email
+    router.post('/email/instant',control.sendInstantEmail)
     
 
     return router
