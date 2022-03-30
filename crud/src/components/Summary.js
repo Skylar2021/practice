@@ -121,7 +121,7 @@ export default function Summary() {
                         <td>{cookies.load('self_review')?.t_id ? cookies.load('self_review').t_id : "no self review create"}</td>
                     </tr> */}
                     <tr>
-                        <td>{self_review?.close_date?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
+                        <td>{self_review?.close_date?.slice(0, (self_review.close_date.indexOf('T')))}</td>
                         <td>{self_review?.completion_dt?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
                         <td>{selfReviewStatus(self_review?.status)}</td>
                         <td><Link to='/self_review'>{self_review?.t_id ? self_review.t_id : "click to create"}</Link></td>
