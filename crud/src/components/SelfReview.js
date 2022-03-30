@@ -34,8 +34,8 @@ function SelfReview() {
     let selfReviewFormRender = () =>{
         let status = cookies.load("self_review")?.status
         if(status === 1) {return <DraftForm assign_type={"S"}/>}
-        else if(status === 2) {return <SubmittedForm assign_type={"S"}/>}
-        else if(status === null ) {return <BlankForm assign_type={"S"}/>}
+        else if(status === 2) {return }
+        else if(status === null ) {return }
         else{return <SubmittedForm assign_type={"S"}/>}
     }
 
@@ -80,7 +80,11 @@ function SelfReview() {
             <RatingInstruction />
             {/* <BlankForm assign_type={"S"}/> */}
             {/* <DraftForm assign_type={"S"} /> */}
-           { selfReviewFormRender()}
+           {/* { selfReviewFormRender()} */}
+
+           {
+               cookies.load("self_review")?.status === 1 ? <DraftForm assign_type={"S"}/> : cookies.load("self_review")?.status === 2 ? <SubmittedForm assign_type={"S"} /> : <BlankForm assign_type={"S"}/>
+           }
 
         </>
     )
