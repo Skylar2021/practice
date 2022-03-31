@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAnswers } from '../../app/slice.js'
+import { getAnswers,setSelfReviewStatus,testing } from '../../app/slice.js'
 
 function DraftForm({ assign_type }) {
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
 
-    const { answers } = useSelector(state => state.staff)
+    const { answers,self_review } = useSelector(state => state.staff)
     const [supervisor, setSupervisor] = useState(false)
 
     const [ttl, setTtl] = useState(0)
@@ -204,7 +204,7 @@ function DraftForm({ assign_type }) {
         console.log(ansArr)
         console.log(scoreObj)
         
-        // navigate('/summary')
+        navigate('/summary', {state:{status:2}})
 
     }
 
@@ -251,10 +251,17 @@ function DraftForm({ assign_type }) {
         console.log(scoreObj)
 
         ansArr.forEach(ansObj => updateAnswer(ansObj))
-        if(typeof ttl === "number" && typeof avg === "number"){
-            updateScore(scoreObj)
+        
+        updateScore(scoreObj)
+        if(assign_type === "S"){
+
+            dispatch(setSelfReviewStatus(2))
         }
-        sendEmail()
+        // sendEmail()
+        console.log(self_review.status)
+
+        navigate('/summary') 
+
 
         
     }
@@ -284,13 +291,15 @@ function DraftForm({ assign_type }) {
     useEffect(() => {
         getQNA()
         dropDown()
+        dispatch(testing())
+        // dispatch(selfReviewData(cookies.load('userData')?.staff_id))
         // calTtl();
         // calAvg();
 
     }, [])
 
     useEffect(() => {
-        console.log("calculate")
+        // console.log("calculate")
         calTtl();
         calAvg();
 
