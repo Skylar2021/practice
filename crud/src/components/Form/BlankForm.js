@@ -112,7 +112,7 @@ function BlankForm({ assign_type }) {
 
     const sendEmail = async () => {
         let body = {
-            deadline: self_review?.close_date?.slice(0, (self_review.close_date.indexOf('T'))),
+            deadline: cookies.load("self_review")?.close_date?.slice(0, (cookies.load("self_review")?.close_date.indexOf('T'))),
             receiver: cookies.load("userData")?.name,
             address: cookies.load("td_review")?.email,
             assign_type
@@ -221,7 +221,7 @@ function BlankForm({ assign_type }) {
 
         console.log(ansArr)
         console.log(scoreObj)
-        sendEmail()
+        // sendEmail()
         navigate('/summary')
     }
 
