@@ -8,7 +8,8 @@ import { getAnswers, getScore } from '../../app/slice.js'
 
 function SubmittedForm({ assign_type }) {
     const dispatch = useDispatch()
-    const { answers, score } = useSelector(state => state.staff)
+    const { answers, score ,self_review, top_down_review } = useSelector(state => state.staff)
+    // const [qna, setQna] = useState([])
     const scoreArrIndex = () => {
         return assign_type === "S" ? 0 : 1
     }
@@ -30,9 +31,10 @@ function SubmittedForm({ assign_type }) {
             body: JSON.stringify(obj)
         })
         if (response.ok) {
-            let answers = await response.json()
-            console.log(answers)
-            dispatch(getAnswers(answers))
+            let result = await response.json()
+            console.log(result)
+            // setQna(result)
+            dispatch(getAnswers(result))
             // console.log(result)
         }
 
@@ -47,7 +49,7 @@ function SubmittedForm({ assign_type }) {
         })
         if (response.ok) {
             let score = await response.json()
-            console.log(score)
+            // console.log(score)
             dispatch(getScore(score))
             // console.log(result)
         }
