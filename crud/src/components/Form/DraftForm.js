@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAnswers,setSelfReviewStatus,testing } from '../../app/slice.js'
+import { getAnswers, setSelfReviewStatus, testing } from '../../app/slice.js'
 
 function DraftForm({ assign_type }) {
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
 
-    const { answers,self_review } = useSelector(state => state.staff)
+    const { answers, self_review } = useSelector(state => state.staff)
     const [supervisor, setSupervisor] = useState(false)
 
     const [ttl, setTtl] = useState(0)
@@ -47,9 +47,9 @@ function DraftForm({ assign_type }) {
             body: JSON.stringify(obj)
         })
         if (response.ok) {
-            let answers = await response.json()
+            let result = await response.json()
             // console.log(answers)
-            dispatch(getAnswers(answers))
+            dispatch(getAnswers(result))
             // console.log(result)
         }
     }
@@ -152,16 +152,16 @@ function DraftForm({ assign_type }) {
             body: JSON.stringify(body)
 
         })
-        if(response.ok){
+        if (response.ok) {
             let result = await response.json()
             // console.log(result)
-        }else{
+        } else {
             let result = await response.json()
-            console.log("error",result)
+            console.log("error", result)
         }
     }
 
-    const handleSave = () =>{
+    const handleSave = () => {
         removeRedBorder();
         calculate();
         let allForm = Array.from(document.querySelectorAll(".answer"))
@@ -197,14 +197,14 @@ function DraftForm({ assign_type }) {
         }
         ansArr.forEach(ansObj => updateAnswer(ansObj))
         ansArr.forEach(ansObj => updateAnswer(ansObj))
-        if(typeof ttl === "number" && typeof avg === "number"){
+        if (typeof ttl === "number" && typeof avg === "number") {
             updateScore(scoreObj)
         }
 
         // console.log(ansArr)
         // console.log(scoreObj)
-        
-        navigate('/summary', {state:{status:"1"}})
+
+        navigate('/summary', { state: { status: "1" } })
 
     }
 
@@ -248,42 +248,42 @@ function DraftForm({ assign_type }) {
             is_optional: "N"
         }
         ansArr.forEach(ansObj => updateAnswer(ansObj))
-        
+
         updateScore(scoreObj)
-        
+
         // console.log(ansArr)
         // console.log(scoreObj)
 
-        if(assign_type === "S"){
+        if (assign_type === "S") {
 
             dispatch(setSelfReviewStatus(2))
         }
         // sendEmail()
         // console.log(self_review.status)
 
-        navigate('/summary',{state: {status: "2"}}) 
+        navigate('/summary', { state: { status: "2" } })
 
 
-        
+
     }
-    const updateAnswer = async(obj) =>{
-        let response = fetch("http://localhost:8080/review/ans_update",{
+    const updateAnswer = async (obj) => {
+        let response = fetch("http://localhost:8080/review/ans_update", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(obj)
         })
-        if(response.ok){
+        if (response.ok) {
             let result = await result.json()
             console.log(result)
         }
     }
-    const updateScore = async(obj) =>{
-        let response = fetch("http://localhost:8080/review/score_update",{
+    const updateScore = async (obj) => {
+        let response = fetch("http://localhost:8080/review/score_update", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(obj)
         })
-        if(response.ok){
+        if (response.ok) {
             let result = await result.json()
             // console.log(result)
         }
@@ -306,6 +306,20 @@ function DraftForm({ assign_type }) {
 
     }, [answers])
 
+    const questionAvg = sectionId => {
+        let allAns = Array.from(document.querySelectorAll(".answer"))
+        .filter(ans=> ans.section.value == sectionId)
+        // .forEach(ans=>console.log(ans.section.value))
+        
+        // console.log(allAns)
+        let sectionScoreArr = allAns.map(ans=>parseInt(ans.choice_id.value))
+        // console.log(sectionScoreArr)
+        let ttl = sectionScoreArr.reduce((n1,n2)=>n1+n2,0)
+        let avg = ttl / sectionScoreArr.length
+        return avg.toFixed(1)
+
+    }
+    // console.log(questionAvg(1))
 
     return (
         <>
@@ -372,8 +386,10 @@ function DraftForm({ assign_type }) {
                                     <input name="section" value={answer?.section} type="hidden" />
                                     <input name="question_id" value={answer?.question_id} type="hidden" />
                                     <input name="form_id" value={answer?.form_id} type="hidden" />
+                                    {cookies.load("userData")?.form_type_id === "F" && answer?.display_order === 1 && <label style={{ display: "block" }}>Average: {questionAvg(answer?.section) } </label>}
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(answer?.section, answer?.question_id)} */}
+
                                     <select
                                         name="choice_id"
                                         className={`choice_id section_${answer?.section}`}
@@ -427,8 +443,8 @@ function DraftForm({ assign_type }) {
 
                         {answer?.show_header === "Y" &&
                             <label key={index}>{answer?.section === 10 && <input style={{ display: "inline-block", width: "max-content" }} type={'checkbox'} />}<b>{answer?.section_header}</b></label>}
-                                    <input name="t_id" value={answer?.t_id} type="hidden" />
-                        
+                        <input name="t_id" value={answer?.t_id} type="hidden" />
+
                         <input name="section" value={answer?.section} type="hidden" />
                         <input name="question_id" value={answer?.question_id} type="hidden" />
                         <input name="form_id" value={answer?.form_id} type="hidden" />

@@ -50,6 +50,18 @@ function SubmittedForm({ assign_type }) {
         }
 
     }
+    const questionAvg = sectionId => {
+        let sectionAns = answers.filter(ans=> ans.section == sectionId)
+        // .forEach(ans=>console.log(ans.section.value))
+        
+        // console.log(allAns)
+        let sectionScoreArr = sectionAns.map(ans=>parseInt(ans.choice_id))
+        // console.log(sectionScoreArr)
+        let ttl = sectionScoreArr.reduce((n1,n2)=>n1+n2,0)
+        let avg = ttl / sectionScoreArr.length
+        return avg.toFixed(1)
+
+    }
     useEffect(() => {
         getQNA();
         getScoreSet();
@@ -76,6 +88,7 @@ function SubmittedForm({ assign_type }) {
                                         <td colSpan={3}><b>{answer?.section_header}</b></td>
 
                                     </tr>}
+                                    { cookies.load("userData")?.form_type_id === "F" && answer?.section !== 10 && answer?.display_order === 1 && <tr><td></td><td colSpan={2}>Average: {questionAvg(answer?.section)}</td></tr>}
                                 <tr>
                                     <td>
                                         <label>{answer?.question_text}</label>

@@ -289,7 +289,26 @@ function BlankForm({ assign_type }) {
         // console.log(t_id)
         return t_id
     }
+    const questionAvg = sectionId => {
+        let allAns = Array.from(document.querySelectorAll(".answer"))
+        .filter(ans=> ans.section.value == sectionId)
+        // .forEach(ans=>console.log(ans.section.value))
+        
+        // console.log(allAns)
+        let sectionScoreArr = allAns.map(ans=>parseInt(ans.choice_id.value))
+        // sectionScoreArr.forEach(ans=>console.log(ans))
 
+        console.log(sectionScoreArr)
+        let ttl = sectionScoreArr.reduce((n1,n2)=>n1+n2,0)
+        console.log(ttl)
+        let avg = ttl / sectionScoreArr.length
+        console.log(avg)
+
+        return avg?.toFixed(1)
+
+    }
+    // questionAvg(1)
+    
 
 
     return (
@@ -350,6 +369,8 @@ function BlankForm({ assign_type }) {
                                     <input name="section" value={question?.section} type="hidden" />
                                     <input name="question_id" value={question?.question_id} type="hidden" />
                                     <input name="form_id" value={question?.form_id} type="hidden" />
+                                    {cookies.load("userData")?.form_type_id === "F" && question?.display_order === 1 && <label style={{ display: "block" }}>Average: {questionAvg(question?.section) } </label>}
+                                    
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(question?.section, question?.question_id)} */}
                                     <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
