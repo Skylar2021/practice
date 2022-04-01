@@ -9,12 +9,7 @@ import { getAnswers, getScore } from '../../app/slice.js'
 function SubmittedForm({ assign_type }) {
     const dispatch = useDispatch()
     const { answers, score ,self_review, top_down_review } = useSelector(state => state.staff)
-    // const [qna, setQna] = useState([])
-    const scoreArrIndex = () => {
-        return assign_type === "S" ? 0 : 1
-    }
-    // console.log(scoreArrIndex())
-    // console.log(score?.score_avg[scoreArrIndex()])
+    
 
 
     const getQNA = async () => {

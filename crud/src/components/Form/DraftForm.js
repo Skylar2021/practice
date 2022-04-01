@@ -48,7 +48,7 @@ function DraftForm({ assign_type }) {
         })
         if (response.ok) {
             let answers = await response.json()
-            console.log(answers)
+            // console.log(answers)
             dispatch(getAnswers(answers))
             // console.log(result)
         }
@@ -103,7 +103,7 @@ function DraftForm({ assign_type }) {
             score_avg = score_ttl / count
         }
         setAvg(score_avg.toFixed(2))
-        console.log(score_avg.toFixed(2))
+        // console.log(score_avg.toFixed(2))
         // console.log(avg)
         document.querySelector(".avg").innerHTML = score_avg.toFixed(2)
         return score_avg.toFixed(2)
@@ -154,7 +154,7 @@ function DraftForm({ assign_type }) {
         })
         if(response.ok){
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
         }else{
             let result = await response.json()
             console.log("error",result)
@@ -201,10 +201,10 @@ function DraftForm({ assign_type }) {
             updateScore(scoreObj)
         }
 
-        console.log(ansArr)
-        console.log(scoreObj)
+        // console.log(ansArr)
+        // console.log(scoreObj)
         
-        navigate('/summary', {state:{status:2}})
+        navigate('/summary', {state:{status:"1"}})
 
     }
 
@@ -247,20 +247,21 @@ function DraftForm({ assign_type }) {
             score_avg: avg,
             is_optional: "N"
         }
-        console.log(ansArr)
-        console.log(scoreObj)
-
         ansArr.forEach(ansObj => updateAnswer(ansObj))
         
         updateScore(scoreObj)
+        
+        // console.log(ansArr)
+        // console.log(scoreObj)
+
         if(assign_type === "S"){
 
             dispatch(setSelfReviewStatus(2))
         }
         // sendEmail()
-        console.log(self_review.status)
+        // console.log(self_review.status)
 
-        navigate('/summary') 
+        navigate('/summary',{state: {status: "2"}}) 
 
 
         
@@ -284,14 +285,14 @@ function DraftForm({ assign_type }) {
         })
         if(response.ok){
             let result = await result.json()
-            console.log(result)
+            // console.log(result)
         }
     }
 
     useEffect(() => {
-        getQNA()
-        dropDown()
-        dispatch(testing())
+        getQNA();
+        dropDown();
+        // dispatch(testing());
         // dispatch(selfReviewData(cookies.load('userData')?.staff_id))
         // calTtl();
         // calAvg();
@@ -308,7 +309,6 @@ function DraftForm({ assign_type }) {
 
     return (
         <>
-        {console.log(ttl, avg)}
             <div width="100%" id="form-container" className='draft-form'>
                 {/* <label>Total: {ttl}</label><br />
                 <label>Average: {avg}</label> */}

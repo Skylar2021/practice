@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // import { useForm } from "react-hook-form";
 
-import { getQuestions } from '../../app/slice.js'
+import { getQuestions, setSelfReviewStatus } from '../../app/slice.js'
 import { useEffect, useState } from 'react';
 
 
@@ -74,7 +74,7 @@ function BlankForm({ assign_type }) {
         })
 
         setTtl(score_ttl)
-        console.log(score_ttl)
+        // console.log(score_ttl)
         // console.log(ttl)
         document.querySelector(".ttl").innerHTML = score_ttl
 
@@ -91,7 +91,7 @@ function BlankForm({ assign_type }) {
 
 
         setAvg(score_avg.toFixed(2))
-        console.log(score_avg.toFixed(2))
+        // console.log(score_avg.toFixed(2))
         // console.log(avg)
         document.querySelector(".avg").innerHTML = score_avg.toFixed(2)
 
@@ -125,7 +125,7 @@ function BlankForm({ assign_type }) {
         })
         if(response.ok){
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
         }else{
             let result = await response.json()
             console.log("error",result)
@@ -169,17 +169,15 @@ function BlankForm({ assign_type }) {
         insertScore(scoreObj)
         ansArr.forEach(ansObj => insertAnswer(ansObj))
 
-        console.log(ansArr)
-        console.log(scoreObj)
+        // console.log(ansArr)
+        // console.log(scoreObj)
 
-        navigate('/summary')
+        navigate('/summary',{state: {status: "1"}})
 
     }
     const handleSubmit = () => {
         removeRedBorder()
-
         calculate();
-
         if (checkChoiceOver7()) {
             alert("Please enter comments if any performance statement scored 7 to 10. \n任何評估項目分數為7至10，必須輸入評語。")
             return
@@ -219,10 +217,14 @@ function BlankForm({ assign_type }) {
         insertScore(scoreObj)
         ansArr.forEach(ansObj => insertAnswer(ansObj))
 
-        console.log(ansArr)
-        console.log(scoreObj)
+        // console.log(ansArr)
+        // console.log(scoreObj)
+        if(assign_type === "S"){
+
+            dispatch(setSelfReviewStatus(2))
+        }
         // sendEmail()
-        navigate('/summary')
+        navigate('/summary',{state: {status: "2"}})
     }
 
     const insertAnswer = async (obj) => {
@@ -234,7 +236,7 @@ function BlankForm({ assign_type }) {
         })
         if (response.ok) {
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
 
         }
 
@@ -248,7 +250,7 @@ function BlankForm({ assign_type }) {
         })
         if (response.ok) {
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
 
         }
 
