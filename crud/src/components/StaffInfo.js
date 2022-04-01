@@ -1,6 +1,6 @@
 import cookies from 'react-cookies';
 
-function staffInfo() {
+function staffInfo({assign_type}) {
     let Appraisal_Period = () => {
         return cookies.load("self_review")?.appr_from_date?.slice(0, (cookies.load("self_review").appr_from_date.indexOf('T'))) + " to " + cookies.load("self_review")?.appr_to_date?.slice(0, (cookies.load("self_review").appr_to_date.indexOf('T')))
     }
@@ -32,12 +32,14 @@ function staffInfo() {
                         <th>Grade<br />職級</th>
                     </tr>
                     <tr>
+
                         <td>{cookies.load('userData')?.staff_id}</td>
                         <td>{cookies.load('userData')?.name}</td>
                         <td>{cookies.load('userData')?.dept}</td>
                         <td>{cookies.load('userData')?.position}</td>
                         <td>{cookies.load('userData')?.date_joined?.slice(0, (cookies.load('userData').date_joined.indexOf('T')))}</td>
                         <td>{cookies.load('userData')?.grade}</td>
+                        
                     </tr>
                 </thead>
                 <tbody>
