@@ -9,7 +9,7 @@ import StaffInfo from './StaffInfo'
 
 
 
-function SelfReview() {
+function SelfReview({assign_type}) {
     const { self_review, top_down_review } = useSelector(state => state.staff)
     function formatDate() {
         let d = new Date(),
@@ -42,7 +42,7 @@ function SelfReview() {
     return (
         <>
             <h1>Performance Appraisal Form 表現評估表</h1>
-            <StaffInfo />
+            <StaffInfo assign_type={assign_type}/>
             {/*
             <h2>Employee Information<br />職員資料</h2>
             
@@ -83,7 +83,7 @@ function SelfReview() {
            {/* { selfReviewFormRender()} */}
 
            {
-               cookies.load("self_review")?.status === 1 ? <DraftForm assign_type={"S"}/> : cookies.load("self_review")?.status === 2 ? <SubmittedForm assign_type={"S"} /> : <BlankForm assign_type={"S"}/>
+               cookies.load("self_review")?.status === 1 ? <DraftForm assign_type={assign_type}/> : cookies.load("self_review")?.status === 2 ? <SubmittedForm assign_type={assign_type} /> : <BlankForm assign_type={assign_type}/>
            }
 
         </>

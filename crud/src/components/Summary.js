@@ -7,9 +7,9 @@ import cookies from 'react-cookies';
 import { selfReview, tdReview } from '../app/slice.js'
 // import BlankForm from "./Form/BlankForm.js";
 
-export default function Summary({self_status, location}) {
+export default function Summary() {
     const dispatch = useDispatch()
-    const {state} = useLocation
+    const {state} = useLocation()
     console.log(state)
 
     const { self_review, top_down_review } = useSelector(state => state.staff)
@@ -26,7 +26,7 @@ export default function Summary({self_status, location}) {
         })
         if (res.ok) {
             let result = await res.json()
-            console.log(result)
+            // console.log(result)
             dispatch(selfReview(result))
             cookies.save('self_review', result)
         } else {
@@ -46,7 +46,7 @@ export default function Summary({self_status, location}) {
         })
         if (res.ok) {
             let result = await res.json()
-            console.log(result)
+            // console.log(result)
             dispatch(tdReview(result))
             cookies.save('top_down_review', result)
             // setTopDownReview(result)
@@ -87,9 +87,10 @@ export default function Summary({self_status, location}) {
     //     selfReviewStatus(self_review.status)        
     // }, [])
     useEffect(() => {
-        console.log(self_review.status)
 
         selfReviewStatus(self_review.status)
+        // console.log(self_review.status)
+
     }, [self_review.status])
 
     // console.log("cookies: self_review")
@@ -143,7 +144,7 @@ export default function Summary({self_status, location}) {
                         <td>{self_review?.close_date?.slice(0, (self_review.close_date.indexOf('T')))}</td>
                         <td>{self_review?.completion_dt?.slice(0, (self_review.date_joined.indexOf('T')))}</td>
                         {/* <td>{cookies.load("self_review")?.status === 1 ?"Draft": cookies.load("self_review")?.status === 2 ? "Submitted" : "no self review" }</td> */}
-                        <td>{self_review_status}</td>
+                        <td>{state ? state.status === "2" ? "Submitted" : state.status === "1" ? "Draft" : "no self review" :self_review_status}</td>
                         {/* <td>{self_status ? self_review_status : this.location.state}</td> */}
 
                         <td><Link to='/self_review'>{self_review?.t_id ? self_review.t_id : "click to create"}</Link></td>

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // import { useForm } from "react-hook-form";
 
-import { getQuestions } from '../../app/slice.js'
+import { getQuestions, setSelfReviewStatus } from '../../app/slice.js'
 import { useEffect, useState } from 'react';
 
 
@@ -74,7 +74,7 @@ function BlankForm({ assign_type }) {
         })
 
         setTtl(score_ttl)
-        console.log(score_ttl)
+        // console.log(score_ttl)
         // console.log(ttl)
         document.querySelector(".ttl").innerHTML = score_ttl
 
@@ -91,7 +91,7 @@ function BlankForm({ assign_type }) {
 
 
         setAvg(score_avg.toFixed(2))
-        console.log(score_avg.toFixed(2))
+        // console.log(score_avg.toFixed(2))
         // console.log(avg)
         document.querySelector(".avg").innerHTML = score_avg.toFixed(2)
 
@@ -125,7 +125,7 @@ function BlankForm({ assign_type }) {
         })
         if(response.ok){
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
         }else{
             let result = await response.json()
             console.log("error",result)
@@ -169,17 +169,15 @@ function BlankForm({ assign_type }) {
         insertScore(scoreObj)
         ansArr.forEach(ansObj => insertAnswer(ansObj))
 
-        console.log(ansArr)
-        console.log(scoreObj)
+        // console.log(ansArr)
+        // console.log(scoreObj)
 
-        navigate('/summary')
+        navigate('/summary',{state: {status: "1"}})
 
     }
     const handleSubmit = () => {
         removeRedBorder()
-
         calculate();
-
         if (checkChoiceOver7()) {
             alert("Please enter comments if any performance statement scored 7 to 10. \n任何評估項目分數為7至10，必須輸入評語。")
             return
@@ -219,10 +217,14 @@ function BlankForm({ assign_type }) {
         insertScore(scoreObj)
         ansArr.forEach(ansObj => insertAnswer(ansObj))
 
-        console.log(ansArr)
-        console.log(scoreObj)
+        // console.log(ansArr)
+        // console.log(scoreObj)
+        if(assign_type === "S"){
+
+            dispatch(setSelfReviewStatus(2))
+        }
         // sendEmail()
-        navigate('/summary')
+        navigate('/summary',{state: {status: "2"}})
     }
 
     const insertAnswer = async (obj) => {
@@ -234,7 +236,7 @@ function BlankForm({ assign_type }) {
         })
         if (response.ok) {
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
 
         }
 
@@ -248,7 +250,7 @@ function BlankForm({ assign_type }) {
         })
         if (response.ok) {
             let result = await response.json()
-            console.log(result)
+            // console.log(result)
 
         }
 
@@ -287,7 +289,26 @@ function BlankForm({ assign_type }) {
         // console.log(t_id)
         return t_id
     }
+    const questionAvg = sectionId => {
+        let allAns = Array.from(document.querySelectorAll(".answer"))
+        .filter(ans=> ans.section.value == sectionId)
+        // .forEach(ans=>console.log(ans.section.value))
+        
+        // console.log(allAns)
+        let sectionScoreArr = allAns.map(ans=>parseInt(ans.choice_id.value))
+        // sectionScoreArr.forEach(ans=>console.log(ans))
 
+        console.log(sectionScoreArr)
+        let ttl = sectionScoreArr.reduce((n1,n2)=>n1+n2,0)
+        console.log(ttl)
+        let avg = ttl / sectionScoreArr.length
+        console.log(avg)
+
+        return avg?.toFixed(1)
+
+    }
+    // questionAvg(1)
+    
 
 
     return (
@@ -348,6 +369,8 @@ function BlankForm({ assign_type }) {
                                     <input name="section" value={question?.section} type="hidden" />
                                     <input name="question_id" value={question?.question_id} type="hidden" />
                                     <input name="form_id" value={question?.form_id} type="hidden" />
+                                    {cookies.load("userData")?.form_type_id === "F" && question?.display_order === 1 && <label style={{ display: "block" }}>Average: {questionAvg(question?.section) } </label>}
+                                    
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(question?.section, question?.question_id)} */}
                                     <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
