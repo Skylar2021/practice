@@ -178,7 +178,7 @@ function App() {
 
                     <Route path="/summary" element={<Summary />} />
 
-                    <Route path='/self_review' element={<SelfReview />}/>
+                    <Route path='/self_review' element={<SelfReview assign_type="S"/>}/>
                     <Route path="/" exact index element={<Login />} />
                     <Route path="*" element={<NF />} />
                 </Routes>
