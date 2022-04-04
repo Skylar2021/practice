@@ -8,8 +8,8 @@ import { getAnswers, getScore } from '../../app/slice.js'
 
 function SubmittedForm({ assign_type }) {
     const dispatch = useDispatch()
-    const { answers, score ,self_review, top_down_review } = useSelector(state => state.staff)
-    
+    const { answers, score, self_review, top_down_review } = useSelector(state => state.staff)
+
 
 
     const getQNA = async () => {
@@ -51,13 +51,13 @@ function SubmittedForm({ assign_type }) {
 
     }
     const questionAvg = sectionId => {
-        let sectionAns = answers.filter(ans=> ans.section == sectionId)
+        let sectionAns = answers.filter(ans => ans.section == sectionId)
         // .forEach(ans=>console.log(ans.section.value))
-        
+
         // console.log(allAns)
-        let sectionScoreArr = sectionAns.map(ans=>parseInt(ans.choice_id))
+        let sectionScoreArr = sectionAns.map(ans => parseInt(ans.choice_id))
         // console.log(sectionScoreArr)
-        let ttl = sectionScoreArr.reduce((n1,n2)=>n1+n2,0)
+        let ttl = sectionScoreArr.reduce((n1, n2) => n1 + n2, 0)
         let avg = ttl / sectionScoreArr.length
         return avg.toFixed(1)
 
@@ -83,18 +83,26 @@ function SubmittedForm({ assign_type }) {
                         </tr>
                         {answers.filter(answer => answer.section !== 20).map((answer, index) => (
                             <>
+                                {/* ----section_header---- */}
                                 {answer?.show_header === "Y" &&
                                     <tr >
                                         <td colSpan={3}><b>{answer?.section_header}</b></td>
 
                                     </tr>}
-                                    { cookies.load("userData")?.form_type_id === "F" && answer?.section !== 10 && answer?.display_order === 1 && <tr><td></td><td colSpan={2}>Average: {questionAvg(answer?.section)}</td></tr>}
+                                {/* ----section_header---- */}
+                                {/* ----average row---- */}
+                                {cookies.load("userData")?.form_type_id === "F" && answer?.section !== 10 && answer?.display_order === 1 && <tr><td>{answer?.question_text}</td><td colSpan={2}>Average: {questionAvg(answer?.section)}</td></tr>}
+                                {/* ----average row---- */}
                                 <tr>
-                                    <td>
-                                        <label>{answer?.question_text}</label>
-                                        <br />
-                                        <label>{answer?.question_subtext}</label>
-                                    </td>
+                                    {cookies.load("userData")?.form_type_id === "F" && answer?.section === 10 ?
+                                        <td>
+                                            <label> {answer?.question_text}</label>
+                                            <br />
+                                            <label> {answer?.question_subtext}</label>
+                                        </td>
+                                        :
+                                        <td>{answer?.display_order === 1 ? <label>{answer?.question_subtext}</label> : <label> {answer?.question_text}</label>}</td>
+                                    }
                                     <td>
                                         <label name="t_id" value={answer?.t_id} type="hidden" />
                                         <label name="section" value={answer?.section} type="hidden" />
@@ -145,7 +153,7 @@ function SubmittedForm({ assign_type }) {
 
 
 
-               
+
 
             </div>
             <footer >
