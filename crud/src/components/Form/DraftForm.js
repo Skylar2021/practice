@@ -353,7 +353,15 @@ function DraftForm({ assign_type }) {
                                     <input name="form_id" value={answer?.form_id} type="hidden" />
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(answer?.section, answer?.question_id)} */}
-                                    <select name="choice_id" className={`choice_id section_${answer?.section}`} id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }} disabled={!supervisor}>
+                                    <select 
+                                        name="choice_id" 
+                                        className={`choice_id section_${answer?.section}`} 
+                                        id={`S${answer?.section.toString()}Q${answer?.question_id.toString()}_choice`} 
+                                        type="text" 
+                                        style={{ display: "inline-block" }} 
+                                        disabled={!supervisor}
+                                        onChange={()=>calculate()}
+                                        >
                                         {dropDown().map((choice, index) =>
                                             (<option value={choice} key={index}>{choice}</option>)
                                         )}
@@ -397,6 +405,7 @@ function DraftForm({ assign_type }) {
                                         type="text"
                                         style={{ display: "inline-block" }}
                                         defaultValue={answer?.choice_id}
+                                        onChange={()=>calculate()}
                                     >
                                         {dropDown().map((choice, index) =>
                                             (<option id={choice} value={choice} key={index}>{choice}</option>)
@@ -463,8 +472,8 @@ function DraftForm({ assign_type }) {
             <footer style={{ display: "flex", justifyCotent: "space-evenly", position: "fixed", bottom: "0px" }}>
                 <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
-                <button onClick={() => calculate()}>Calculate</button>
-                <button onClick={() => calculate()}>Send Email</button>
+                {/* <button onClick={() => calculate()}>Calculate</button> */}
+                {/* <button onClick={() => calculate()}>Send Email</button> */}
                 <button><a href='#top'>Back to Top</a></button>
                 <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
             </footer>

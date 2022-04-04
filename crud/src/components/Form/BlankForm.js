@@ -345,7 +345,15 @@ function BlankForm({ assign_type }) {
                                     <input name="form_id" value={question?.form_id} type="hidden" />
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(question?.section, question?.question_id)} */}
-                                    <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }} disabled={!supervisor}>
+                                    <select 
+                                        name="choice_id" 
+                                        className={`choice_id section_${question?.section}`} 
+                                        id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} 
+                                        type="text" 
+                                        style={{ display: "inline-block" }} 
+                                        disabled={!supervisor}
+                                        onChange={()=>calculate()}
+                                        >
                                         {dropDown().map((choice, index) =>
                                             (<option value={choice} key={index}>{choice}</option>)
                                         )}
@@ -373,7 +381,14 @@ function BlankForm({ assign_type }) {
                                     
                                     <label style={{ display: "inline-block", marginRight: "10px" }}>Rating 評分</label>
                                     {/* {dropDown(question?.section, question?.question_id)} */}
-                                    <select name="choice_id" className={`choice_id section_${question?.section}`} id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} type="text" style={{ display: "inline-block" }}>
+                                    <select 
+                                        name="choice_id" 
+                                        className={`choice_id section_${question?.section}`} 
+                                        id={`S${question?.section.toString()}Q${question?.question_id.toString()}_choice`} 
+                                        type="text" 
+                                        style={{ display: "inline-block" }}
+                                        onChange={()=>calculate()}
+                                        >
                                         {dropDown().map((choice, index) =>
                                             (<option id={choice} value={choice} key={index}>{choice}</option>)
                                         )}
@@ -456,7 +471,7 @@ function BlankForm({ assign_type }) {
                 <button onClick={() => handleSave()}>Save</button>
                 <button onClick={() => handleSubmit()}>submit</button>
 
-                <button onClick={() => calculate()}>Calculate</button>
+                {/* <button onClick={() => calculate()}>Calculate</button> */}
                 <button><a href='#top'>Back to Top</a></button>
                 <button>Average: <span className='avg'>{avg}</span> Total: <span className='ttl'>{ttl}</span></button>
 
